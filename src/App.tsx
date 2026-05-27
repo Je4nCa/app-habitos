@@ -4,7 +4,7 @@ import { usePlayerStore }        from '@/store/playerStore'
 import { useSettingsStore }      from '@/store/settingsStore'
 import { useNotificationsStore } from '@/store/notificationsStore'
 import { useThemeStore }         from '@/store/themeStore'
-import { applyTheme, getThemeColor } from '@/lib/theme'
+import { applyTheme, getThemeColor, applyBackground, getBackgroundTheme } from '@/lib/theme'
 import { requestPersistentStorage } from '@/lib/storage'
 import { scheduleTodayNotifications } from '@/lib/notifications'
 import { BottomNav }      from '@/components/BottomNav'
@@ -18,14 +18,13 @@ import { SettingsPage }   from '@/pages/SettingsPage'
 function AppShell() {
   const { storagePermission, setStoragePermission } = useSettingsStore()
   const notifs     = useNotificationsStore()
-  const primaryKey = useThemeStore(s => s.primaryKey)
+  const primaryKey    = useThemeStore(s => s.primaryKey)
+  const backgroundKey = useThemeStore(s => s.backgroundKey)
   const { playerName } = usePlayerStore()
 
-  // Re-apply theme on every render cycle that changes primaryKey
-  // (covers the race between React render and onRehydrateStorage)
-  useEffect(() => {
-    applyTheme(getThemeColor(primaryKey))
-  }, [primaryKey])
+  // Re-apply both layers on change (covers the hydration race with onRehydrateStorage)
+  useEffect(() => { applyTheme(getThemeColor(primaryKey)) },       [primaryKey])
+  useEffect(() => { applyBackground(getBackgroundTheme(backgroundKey)) }, [backgroundKey])
 
   // Request persistent storage once
   useEffect(() => {

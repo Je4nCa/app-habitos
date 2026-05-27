@@ -6,7 +6,7 @@ import { useSettingsStore } from '@/store/settingsStore'
 import { useNotificationsStore } from '@/store/notificationsStore'
 import { usePlayerStore } from '@/store/playerStore'
 import { useThemeStore } from '@/store/themeStore'
-import { THEME_COLORS } from '@/lib/theme'
+import { THEME_COLORS, BACKGROUND_THEMES } from '@/lib/theme'
 import { Trash2, Download, Upload, ShieldCheck, ShieldAlert, AlertCircle, Bell, BellOff, Check } from 'lucide-react'
 import { daysSince } from '@/lib/storage'
 import { requestPermission, isSupported } from '@/lib/notifications'
@@ -18,7 +18,7 @@ export function SettingsPage() {
   const { storagePermission, lastBackupAt, markBackup } = useSettingsStore()
   const notifs = useNotificationsStore()
   const { partnerName } = usePlayerStore()
-  const { primaryKey, setPrimary } = useThemeStore()
+  const { primaryKey, setPrimary, backgroundKey, setBackground } = useThemeStore()
   const [confirmReset, setConfirmReset] = useState(false)
 
   const handleEnableNotifs = async () => {
@@ -250,12 +250,15 @@ export function SettingsPage() {
           )}
         </div>
 
-        {/* Color theme picker */}
+        {/* ── Apariencia ─────────────────────────────────────────── */}
+
+        {/* Accent color */}
         <div className="bg-card border border-border rounded-2xl p-5">
-          <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium mb-4">
-            Color del app
+          <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium mb-1">
+            Color de acento
           </p>
-          <div className="grid grid-cols-5 gap-3">
+          <p className="text-xs text-muted-foreground mb-4">Botones, anillos, puntos destacados</p>
+          <div className="grid grid-cols-4 gap-3">
             {THEME_COLORS.map(c => {
               const isSelected = primaryKey === c.key
               return (
@@ -265,15 +268,64 @@ export function SettingsPage() {
                   className="flex flex-col items-center gap-1.5 group"
                 >
                   <div
-                    className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-200
-                      ${isSelected ? 'scale-110 ring-2 ring-white/50 ring-offset-2 ring-offset-background' : 'scale-100 group-active:scale-95'}`}
+                    className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-200
+                      ${isSelected
+                        ? 'scale-110 ring-2 ring-white/50 ring-offset-2 ring-offset-background shadow-lg'
+                        : 'scale-100 group-active:scale-90'}`}
                     style={{ background: `hsl(${c.primary})` }}
                   >
                     {isSelected && (
-                      <Check size={18} strokeWidth={3} style={{ color: `hsl(${c.fg})` }} className="animate-check-pop" />
+                      <Check size={20} strokeWidth={3} style={{ color: `hsl(${c.fg})` }} className="animate-check-pop" />
                     )}
                   </div>
                   <p className="text-[9px] text-muted-foreground text-center leading-tight">{c.label}</p>
+                </button>
+              )
+            })}
+          </div>
+        </div>
+
+        {/* Background theme */}
+        <div className="bg-card border border-border rounded-2xl p-5">
+          <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium mb-1">
+            Fondo del app
+          </p>
+          <p className="text-xs text-muted-foreground mb-4">El tono base de toda la interfaz</p>
+          <div className="flex gap-3 overflow-x-auto scrollbar-none pb-1 -mx-1 px-1">
+            {BACKGROUND_THEMES.map(bg => {
+              const isSelected = backgroundKey === bg.key
+              // find current accent primary to show in the preview dot
+              const currentAccent = THEME_COLORS.find(c => c.key === primaryKey)?.primary ?? '258 90% 66%'
+              return (
+                <button
+                  key={bg.key}
+                  onClick={() => setBackground(bg.key)}
+                  className="flex-none flex flex-col items-center gap-2 group"
+                >
+                  {/* Mini phone preview */}
+                  <div
+                    className={`w-16 h-24 rounded-2xl overflow-hidden relative transition-all duration-200
+                      ${isSelected
+                        ? 'scale-110 ring-2 ring-white/50 ring-offset-2 ring-offset-background shadow-xl'
+                        : 'scale-100 group-active:scale-95'}`}
+                    style={{ background: `hsl(${bg.background})` }}
+                  >
+                    {/* Fake cards */}
+                    <div className="mx-2 mt-2.5 h-3.5 rounded-lg" style={{ background: `hsl(${bg.card})` }} />
+                    <div className="mx-2 mt-1 h-2.5 rounded-lg opacity-70" style={{ background: `hsl(${bg.card})` }} />
+                    <div className="mx-2 mt-1 h-2.5 rounded-lg opacity-50" style={{ background: `hsl(${bg.card})` }} />
+                    {/* Accent dot */}
+                    <div
+                      className="absolute bottom-2.5 left-1/2 -translate-x-1/2 w-5 h-5 rounded-full"
+                      style={{ background: `hsl(${currentAccent})` }}
+                    />
+                    {isSelected && (
+                      <div className="absolute top-1.5 right-1.5 w-4 h-4 rounded-full bg-white/90 flex items-center justify-center">
+                        <Check size={10} strokeWidth={3} className="text-black" />
+                      </div>
+                    )}
+                  </div>
+                  <p className="text-[9px] text-muted-foreground text-center leading-tight w-16">{bg.label}</p>
                 </button>
               )
             })}

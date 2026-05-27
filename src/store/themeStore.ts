@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import { persist, createJSONStorage } from 'zustand/middleware'
 import { get, set, del } from 'idb-keyval'
-import { applyTheme, getThemeColor } from '@/lib/theme'
+import { applyTheme, getThemeColor, applyBackground, getBackgroundTheme } from '@/lib/theme'
 
 const idbStorage = {
   getItem: async (name: string) => { const v = await get(name); return v ?? null },
@@ -11,25 +11,34 @@ const idbStorage = {
 
 interface ThemeState {
   primaryKey: string
-  setPrimary: (key: string) => void
+  backgroundKey: string
+  setPrimary:    (key: string) => void
+  setBackground: (key: string) => void
 }
 
 export const useThemeStore = create<ThemeState>()(
   persist(
     (set) => ({
-      primaryKey: 'violet',
+      primaryKey:    'violet',
+      backgroundKey: 'navy',
 
       setPrimary: (key) => {
         applyTheme(getThemeColor(key))
         set({ primaryKey: key })
       },
+
+      setBackground: (key) => {
+        applyBackground(getBackgroundTheme(key))
+        set({ backgroundKey: key })
+      },
     }),
     {
       name: 'habitos-mamocitos-theme',
       storage: createJSONStorage(() => idbStorage),
-      // Re-apply theme immediately after IndexedDB hydration
       onRehydrateStorage: () => (state) => {
-        if (state) applyTheme(getThemeColor(state.primaryKey))
+        if (!state) return
+        applyTheme(getThemeColor(state.primaryKey))
+        applyBackground(getBackgroundTheme(state.backgroundKey))
       },
     }
   )
