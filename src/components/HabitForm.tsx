@@ -30,6 +30,7 @@ export function HabitForm({ initial, onSave, onCancel }: HabitFormProps) {
   const [frequency, setFrequency] = useState<HabitFrequency>(initial?.frequency ?? 'daily')
   const [customDays, setCustomDays] = useState<number[]>(initial?.customDays ?? [1,2,3,4,5])
   const [color, setColor]         = useState(initial?.color ?? 'violet')
+  const [isMorning, setIsMorning] = useState(initial?.isMorning ?? false)
 
   const toggleDay = (d: number) =>
     setCustomDays(prev => prev.includes(d) ? prev.filter(x => x !== d) : [...prev, d])
@@ -43,6 +44,7 @@ export function HabitForm({ initial, onSave, onCancel }: HabitFormProps) {
       frequency,
       customDays: frequency === 'custom' ? customDays : undefined,
       color,
+      isMorning,
       archivedAt: initial?.archivedAt,
     })
   }
@@ -163,6 +165,29 @@ export function HabitForm({ initial, onSave, onCancel }: HabitFormProps) {
               ))}
             </div>
           )}
+        </section>
+
+        {/* Morning check-in toggle */}
+        <section>
+          <button
+            onClick={() => setIsMorning(v => !v)}
+            className={`w-full flex items-center gap-3 p-4 rounded-2xl border transition-all duration-150 ${
+              isMorning ? 'bg-amber-500/15 border-amber-500/40' : 'bg-muted/40 border-border'
+            }`}
+          >
+            <span className="text-2xl">☀️</span>
+            <div className="flex-1 text-left">
+              <p className={`font-semibold text-sm ${isMorning ? 'text-amber-300' : ''}`}>
+                Hábito de mañana
+              </p>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                Se confirma al despertar y cuenta para el día anterior
+              </p>
+            </div>
+            <div className={`w-11 h-6 rounded-full transition-all duration-200 relative ${isMorning ? 'bg-amber-500' : 'bg-border'}`}>
+              <div className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-all duration-200 ${isMorning ? 'left-5' : 'left-0.5'}`} />
+            </div>
+          </button>
         </section>
       </div>
     </div>

@@ -20,6 +20,7 @@ export interface Habit {
   customDays?: number[] // 0=Sun, 1=Mon, ... 6=Sat
   color: string        // tailwind color key, e.g. 'violet', 'sky', 'emerald'
   order: number
+  isMorning?: boolean  // completed next morning (logs for previous day)
   archivedAt?: string  // ISO date when archived
   createdAt: string    // ISO date
 }
