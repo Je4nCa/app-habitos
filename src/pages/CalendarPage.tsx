@@ -272,14 +272,13 @@ export function CalendarPage() {
 
       </main>
 
-      {/* Add event bottom sheet */}
+      {/* Add event modal — centered so iOS swipe-down doesn't interfere */}
       {sheet && (
-        <div className="fixed inset-0 z-50 flex flex-col justify-end">
+        <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto p-4">
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm animate-fade-bd" onClick={() => setSheet(false)} />
-          <div className="relative bg-background rounded-t-3xl border-t border-border gpu animate-sheet-up safe-bottom max-h-[92dvh] overflow-y-auto scrollbar-none">
-            <div className="mx-auto w-10 h-1 bg-border rounded-full mt-3 mb-1 sticky top-3" />
+          <div className="relative bg-card border border-border rounded-2xl w-full max-w-sm my-auto animate-scale-in gpu overflow-y-auto scrollbar-none max-h-[88dvh]">
 
-            <div className="px-5 pt-2 pb-8 space-y-5">
+            <div className="px-5 pt-5 pb-6 space-y-5">
 
               {/* Header */}
               <div className="flex items-center justify-between">
@@ -373,6 +372,7 @@ export function CalendarPage() {
           </div>
         </div>
       )}
+
     </div>
   )
 }
