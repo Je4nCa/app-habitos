@@ -14,6 +14,8 @@ import { HabitsPage }     from '@/pages/HabitsPage'
 import { HistoryPage }    from '@/pages/HistoryPage'
 import { ChallengePage }  from '@/pages/ChallengePage'
 import { SettingsPage }   from '@/pages/SettingsPage'
+import { CalendarPage }   from '@/pages/CalendarPage'
+import { PrivatePage }    from '@/pages/PrivatePage'
 
 function AppShell() {
   const { storagePermission, setStoragePermission } = useSettingsStore()
@@ -65,10 +67,12 @@ function AppShell() {
     <div className="min-h-dvh bg-background text-foreground flex flex-col">
       <Routes>
         <Route path="/"          element={<TodayPage />}     />
+        <Route path="/calendar"  element={<CalendarPage />}  />
         <Route path="/habits"    element={<HabitsPage />}    />
         <Route path="/history"   element={<HistoryPage />}   />
         <Route path="/challenge" element={<ChallengePage />} />
         <Route path="/settings"  element={<SettingsPage />}  />
+        <Route path="/nosotros"  element={<PrivatePage />}   />
         <Route path="*"          element={<Navigate to="/" replace />} />
       </Routes>
       <BottomNav />

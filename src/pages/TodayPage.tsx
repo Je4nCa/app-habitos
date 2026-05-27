@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
-import { Share2 } from 'lucide-react'
+import { Share2, Heart } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 import { useHabitsStore } from '@/store/habitsStore'
 import { useLogsStore } from '@/store/logsStore'
 import { usePlayerStore } from '@/store/playerStore'
@@ -26,6 +27,7 @@ export function TodayPage() {
   const { playerName, partnerName } = usePlayerStore()
   const sleepEntries = useSleepStore(s => s.entries)
   const [sharingMilestone, setSharingMilestone] = useState<Milestone | null>(null)
+  const navigate = useNavigate()
 
   const todayStr     = today()
   const yesterdayStr = yesterday()
@@ -90,12 +92,23 @@ export function TodayPage() {
               {allDone ? '¡Todo listo! 🎉' : playerName ? `Hola, ${playerName}` : 'Buenos días'}
             </h1>
           </div>
-          <div className="relative">
-            <ProgressRing completed={completedCount} total={allScheduled.length} size={56} strokeWidth={5} />
-            <div className="absolute inset-0 flex items-center justify-center">
-              <span className="text-xs font-bold">
-                {allScheduled.length === 0 ? '–' : `${completedCount}/${allScheduled.length}`}
-              </span>
+          <div className="flex items-center gap-2">
+            {/* Hidden entry to private page — subtle heart icon */}
+            <button
+              onClick={() => navigate('/nosotros')}
+              style={{ transition: 'opacity 200ms ease, transform 150ms cubic-bezier(0.23,1,0.32,1)' }}
+              className="opacity-[0.18] hover:opacity-40 active:scale-[0.9] p-1"
+              aria-label="Nosotros"
+            >
+              <Heart size={16} className="text-rose-400" fill="currentColor" />
+            </button>
+            <div className="relative">
+              <ProgressRing completed={completedCount} total={allScheduled.length} size={56} strokeWidth={5} />
+              <div className="absolute inset-0 flex items-center justify-center">
+                <span className="text-xs font-bold">
+                  {allScheduled.length === 0 ? '–' : `${completedCount}/${allScheduled.length}`}
+                </span>
+              </div>
             </div>
           </div>
         </div>
