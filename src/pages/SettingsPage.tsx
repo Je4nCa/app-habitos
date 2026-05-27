@@ -286,50 +286,65 @@ export function SettingsPage() {
         </div>
 
         {/* Background theme */}
-        <div className="bg-card border border-border rounded-2xl p-5">
-          <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium mb-1">
-            Fondo del app
-          </p>
-          <p className="text-xs text-muted-foreground mb-4">El tono base de toda la interfaz</p>
-          <div className="flex gap-3 overflow-x-auto scrollbar-none pb-1 -mx-1 px-1">
-            {BACKGROUND_THEMES.map(bg => {
-              const isSelected = backgroundKey === bg.key
-              // find current accent primary to show in the preview dot
-              const currentAccent = THEME_COLORS.find(c => c.key === primaryKey)?.primary ?? '258 90% 66%'
-              return (
-                <button
-                  key={bg.key}
-                  onClick={() => setBackground(bg.key)}
-                  className="flex-none flex flex-col items-center gap-2 group"
-                >
-                  {/* Mini phone preview */}
-                  <div
-                    className={`w-16 h-24 rounded-2xl overflow-hidden relative transition-all duration-200
-                      ${isSelected
-                        ? 'scale-110 ring-2 ring-white/50 ring-offset-2 ring-offset-background shadow-xl'
-                        : 'scale-100 group-active:scale-95'}`}
-                    style={{ background: `hsl(${bg.background})` }}
-                  >
-                    {/* Fake cards */}
-                    <div className="mx-2 mt-2.5 h-3.5 rounded-lg" style={{ background: `hsl(${bg.card})` }} />
-                    <div className="mx-2 mt-1 h-2.5 rounded-lg opacity-70" style={{ background: `hsl(${bg.card})` }} />
-                    <div className="mx-2 mt-1 h-2.5 rounded-lg opacity-50" style={{ background: `hsl(${bg.card})` }} />
-                    {/* Accent dot */}
-                    <div
-                      className="absolute bottom-2.5 left-1/2 -translate-x-1/2 w-5 h-5 rounded-full"
-                      style={{ background: `hsl(${currentAccent})` }}
-                    />
-                    {isSelected && (
-                      <div className="absolute top-1.5 right-1.5 w-4 h-4 rounded-full bg-white/90 flex items-center justify-center">
-                        <Check size={10} strokeWidth={3} className="text-black" />
-                      </div>
-                    )}
-                  </div>
-                  <p className="text-[9px] text-muted-foreground text-center leading-tight w-16">{bg.label}</p>
-                </button>
-              )
-            })}
+        <div className="bg-card border border-border rounded-2xl p-5 space-y-5">
+          <div>
+            <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium mb-1">
+              Fondo del app
+            </p>
+            <p className="text-xs text-muted-foreground">El tono base de toda la interfaz</p>
           </div>
+
+          {(['dark', 'light'] as const).map(mode => {
+            const group = BACKGROUND_THEMES.filter(b => (mode === 'dark') === b.isDark)
+            const accent = THEME_COLORS.find(c => c.key === primaryKey)?.primary ?? '258 90% 66%'
+            return (
+              <div key={mode}>
+                <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-3">
+                  {mode === 'dark' ? '🌙 Modo oscuro' : '☀️ Modo claro'}
+                </p>
+                <div className="grid grid-cols-5 gap-2">
+                  {group.map(bg => {
+                    const isSelected = backgroundKey === bg.key
+                    // Fake text line color for preview
+                    const textPreview = bg.isDark ? `hsl(${bg.foreground} / 0.25)` : `hsl(${bg.foreground} / 0.18)`
+                    return (
+                      <button
+                        key={bg.key}
+                        onClick={() => setBackground(bg.key)}
+                        className="flex flex-col items-center gap-1.5 group"
+                      >
+                        <div
+                          className={`w-full aspect-[3/4] rounded-xl overflow-hidden relative transition-all duration-200
+                            ${isSelected
+                              ? 'scale-105 ring-2 ring-primary ring-offset-2 ring-offset-background shadow-lg'
+                              : 'group-active:scale-95'}`}
+                          style={{ background: `hsl(${bg.background})` }}
+                        >
+                          {/* Fake card */}
+                          <div className="mx-1.5 mt-2 h-2.5 rounded-md" style={{ background: `hsl(${bg.card})` }} />
+                          {/* Fake text lines */}
+                          <div className="mx-1.5 mt-1 h-1.5 rounded-sm" style={{ background: textPreview }} />
+                          <div className="mx-1.5 mt-0.5 h-1.5 w-3/4 rounded-sm" style={{ background: textPreview }} />
+                          {/* Accent dot */}
+                          <div
+                            className="absolute bottom-2 left-1/2 -translate-x-1/2 w-4 h-4 rounded-full"
+                            style={{ background: `hsl(${accent})` }}
+                          />
+                          {isSelected && (
+                            <div className="absolute top-1 right-1 w-3.5 h-3.5 rounded-full flex items-center justify-center"
+                              style={{ background: `hsl(${accent})` }}>
+                              <Check size={8} strokeWidth={3} style={{ color: `hsl(${THEME_COLORS.find(c=>c.key===primaryKey)?.fg ?? '0 0% 100%'})` }} />
+                            </div>
+                          )}
+                        </div>
+                        <p className="text-[8px] text-muted-foreground text-center leading-tight">{bg.label}</p>
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+            )
+          })}
         </div>
 
         {/* Backup / restore */}

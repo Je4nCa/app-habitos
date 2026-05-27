@@ -18,6 +18,12 @@
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
     --radius: 1rem;
+
+    /* Semantic quality indicator colors (overridden per background theme) */
+    --q-excellent: 258 90% 72%;
+    --q-good:      152 68% 60%;
+    --q-fair:       38 92% 67%;
+    --q-poor:      347 77% 72%;
   }
 }
 

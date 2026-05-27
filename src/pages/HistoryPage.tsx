@@ -14,11 +14,12 @@ const SLEEP_BAR_COLOR: Record<string, string> = {
   fair:      'bg-amber-500',
   poor:      'bg-rose-500',
 }
-const SLEEP_TEXT_COLOR: Record<string, string> = {
-  excellent: 'text-violet-400',
-  good:      'text-emerald-400',
-  fair:      'text-amber-400',
-  poor:      'text-rose-400',
+// CSS vars adapt automatically on light vs dark backgrounds
+const SLEEP_CSS_VAR: Record<string, string> = {
+  excellent: '--q-excellent',
+  good:      '--q-good',
+  fair:      '--q-fair',
+  poor:      '--q-poor',
 }
 
 export function HistoryPage() {
@@ -165,7 +166,7 @@ export function HistoryPage() {
                 return (
                   <div className="flex gap-3">
                     <div className="flex-1 bg-muted rounded-xl p-3 text-center">
-                      <p className={`text-2xl font-bold ${SLEEP_TEXT_COLOR[q]}`}>{avgScore}</p>
+                      <p className="text-2xl font-bold" style={{ color: `hsl(var(${SLEEP_CSS_VAR[q]}))` }}>{avgScore}</p>
                       <p className="text-xs text-muted-foreground mt-0.5">Score promedio</p>
                     </div>
                     <div className="flex-1 bg-muted rounded-xl p-3 text-center">
@@ -222,7 +223,7 @@ export function HistoryPage() {
                       {(['excellent','good','fair','poor'] as const).map(q => (
                         <div key={q} className="flex items-center gap-1">
                           <div className={`w-2 h-2 rounded-full ${SLEEP_BAR_COLOR[q]}`} />
-                          <span className={`text-[10px] ${SLEEP_TEXT_COLOR[q]}`}>
+                          <span className="text-[10px]" style={{ color: `hsl(var(${SLEEP_CSS_VAR[q]}))` }}>
                             {q === 'excellent' ? 'Excelente 85+' : q === 'good' ? 'Bueno 70-84' : q === 'fair' ? 'Regular 50-69' : 'Bajo <50'}
                           </span>
                         </div>

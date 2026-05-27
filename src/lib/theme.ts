@@ -7,7 +7,7 @@ export interface ThemeColor {
   fg: string        // foreground ON primary backgrounds
 }
 
-// 24 colors — 4 cols × 6 rows grid
+// 24 colors — 4 cols × 6 rows
 export const THEME_COLORS: ThemeColor[] = [
   // Row 1 — purples
   { key: 'lilac',    label: 'Lila',        primary: '268 55% 72%', fg: '222 47% 7%'  },
@@ -58,6 +58,7 @@ export function getThemeColor(key: string): ThemeColor {
 export interface BackgroundTheme {
   key: string
   label: string
+  isDark: boolean
   background: string
   card: string
   muted: string
@@ -66,76 +67,124 @@ export interface BackgroundTheme {
   mutedFg: string
 }
 
+// Semantic indicator colors for dark vs light backgrounds
+// (sleep quality, etc.) — auto-switched in applyBackground
+const QUALITY_DARK = {
+  excellent: '258 90% 72%',  // violet-400
+  good:      '152 68% 60%',  // emerald-400
+  fair:      '38 92% 67%',   // amber-400
+  poor:      '347 77% 72%',  // rose-400
+}
+const QUALITY_LIGHT = {
+  excellent: '258 89% 44%',  // violet-700
+  good:      '161 94% 28%',  // emerald-700
+  fair:      '32 95% 38%',   // amber-700
+  poor:      '346 87% 40%',  // rose-700
+}
+
 export const BACKGROUND_THEMES: BackgroundTheme[] = [
+  // ── Dark ───────────────────────────────────────────────────────────────────
   {
-    key: 'navy',
-    label: 'Marina',
-    background: '222 47% 7%',
-    card:       '222 47% 10%',
-    muted:      '223 47% 15%',
-    border:     '222 47% 16%',
-    foreground: '213 31% 91%',
-    mutedFg:    '215 20% 55%',
+    key: 'navy',   label: 'Marina',      isDark: true,
+    background: '222 47% 7%',  card: '222 47% 10%', muted: '223 47% 15%',
+    border: '222 47% 16%',     foreground: '213 31% 91%', mutedFg: '215 20% 55%',
   },
   {
-    key: 'black',
-    label: 'AMOLED',
-    background: '0 0% 0%',
-    card:       '0 0% 6%',
-    muted:      '0 0% 12%',
-    border:     '0 0% 14%',
-    foreground: '0 0% 93%',
-    mutedFg:    '0 0% 48%',
+    key: 'black',  label: 'AMOLED',      isDark: true,
+    background: '0 0% 0%',     card: '0 0% 6%',     muted: '0 0% 12%',
+    border: '0 0% 14%',        foreground: '0 0% 93%',    mutedFg: '0 0% 48%',
   },
   {
-    key: 'midnight',
-    label: 'Medianoche',
-    background: '250 40% 7%',
-    card:       '250 35% 10%',
-    muted:      '250 30% 15%',
-    border:     '250 30% 17%',
-    foreground: '248 25% 92%',
-    mutedFg:    '248 15% 54%',
+    key: 'midnight', label: 'Medianoche', isDark: true,
+    background: '250 40% 7%',  card: '250 35% 10%', muted: '250 30% 15%',
+    border: '250 30% 17%',     foreground: '248 25% 92%', mutedFg: '248 15% 54%',
   },
   {
-    key: 'forest',
-    label: 'Bosque',
-    background: '155 35% 6%',
-    card:       '155 30% 9%',
-    muted:      '155 25% 14%',
-    border:     '155 25% 16%',
-    foreground: '150 15% 91%',
-    mutedFg:    '150 10% 54%',
+    key: 'lilac-dark', label: 'Lila oscuro', isDark: true,
+    background: '268 35% 7%',  card: '268 30% 10%', muted: '268 25% 15%',
+    border: '268 25% 17%',     foreground: '268 20% 92%', mutedFg: '268 12% 54%',
   },
   {
-    key: 'wine',
-    label: 'Vino',
-    background: '340 40% 7%',
-    card:       '340 35% 10%',
-    muted:      '340 28% 15%',
-    border:     '340 28% 17%',
-    foreground: '340 15% 92%',
-    mutedFg:    '340 10% 54%',
+    key: 'forest',  label: 'Bosque',      isDark: true,
+    background: '155 35% 6%',  card: '155 30% 9%',  muted: '155 25% 14%',
+    border: '155 25% 16%',     foreground: '150 15% 91%', mutedFg: '150 10% 54%',
   },
   {
-    key: 'warm',
-    label: 'Noche cálida',
-    background: '25 35% 7%',
-    card:       '25 30% 10%',
-    muted:      '25 25% 15%',
-    border:     '25 25% 17%',
-    foreground: '25 15% 92%',
-    mutedFg:    '25 10% 54%',
+    key: 'petrol',  label: 'Petróleo',    isDark: true,
+    background: '185 40% 7%',  card: '185 35% 10%', muted: '185 30% 15%',
+    border: '185 30% 17%',     foreground: '185 20% 92%', mutedFg: '185 10% 54%',
   },
   {
-    key: 'storm',
-    label: 'Tormenta',
-    background: '215 25% 7%',
-    card:       '215 20% 10%',
-    muted:      '215 18% 15%',
-    border:     '215 18% 17%',
-    foreground: '215 15% 92%',
-    mutedFg:    '215 10% 54%',
+    key: 'wine',    label: 'Vino',        isDark: true,
+    background: '340 40% 7%',  card: '340 35% 10%', muted: '340 28% 15%',
+    border: '340 28% 17%',     foreground: '340 15% 92%', mutedFg: '340 10% 54%',
+  },
+  {
+    key: 'warm',    label: 'Noche cálida', isDark: true,
+    background: '25 35% 7%',   card: '25 30% 10%',  muted: '25 25% 15%',
+    border: '25 25% 17%',      foreground: '25 15% 92%',  mutedFg: '25 10% 54%',
+  },
+  {
+    key: 'coffee',  label: 'Café',        isDark: true,
+    background: '20 30% 7%',   card: '20 25% 10%',  muted: '20 20% 15%',
+    border: '20 20% 17%',      foreground: '25 12% 92%',  mutedFg: '25 8% 54%',
+  },
+  {
+    key: 'storm',   label: 'Tormenta',    isDark: true,
+    background: '215 25% 7%',  card: '215 20% 10%', muted: '215 18% 15%',
+    border: '215 18% 17%',     foreground: '215 15% 92%', mutedFg: '215 10% 54%',
+  },
+
+  // ── Light ──────────────────────────────────────────────────────────────────
+  {
+    key: 'white',   label: 'Blanco',      isDark: false,
+    background: '0 0% 98%',    card: '0 0% 100%',   muted: '0 0% 93%',
+    border: '0 0% 86%',        foreground: '222 20% 10%', mutedFg: '215 15% 45%',
+  },
+  {
+    key: 'pearl',   label: 'Gris perla',  isDark: false,
+    background: '210 15% 96%', card: '210 10% 100%', muted: '210 12% 91%',
+    border: '210 12% 84%',     foreground: '210 20% 10%', mutedFg: '210 12% 44%',
+  },
+  {
+    key: 'cream',   label: 'Crema',       isDark: false,
+    background: '40 35% 97%',  card: '40 30% 100%', muted: '40 20% 93%',
+    border: '40 20% 86%',      foreground: '25 22% 10%',  mutedFg: '30 12% 44%',
+  },
+  {
+    key: 'lavender', label: 'Lavanda',    isDark: false,
+    background: '265 30% 97%', card: '265 20% 100%', muted: '265 22% 92%',
+    border: '265 20% 86%',     foreground: '265 30% 12%', mutedFg: '265 14% 45%',
+  },
+  {
+    key: 'mint-light', label: 'Menta',    isDark: false,
+    background: '160 28% 97%', card: '160 20% 100%', muted: '160 20% 92%',
+    border: '160 16% 85%',     foreground: '160 25% 10%', mutedFg: '160 10% 44%',
+  },
+  {
+    key: 'sky-light', label: 'Cielo',     isDark: false,
+    background: '205 35% 97%', card: '205 25% 100%', muted: '205 25% 92%',
+    border: '205 20% 85%',     foreground: '205 30% 10%', mutedFg: '205 14% 44%',
+  },
+  {
+    key: 'blush',   label: 'Rosa palo',   isDark: false,
+    background: '340 28% 97%', card: '340 20% 100%', muted: '340 20% 92%',
+    border: '340 16% 86%',     foreground: '340 28% 12%', mutedFg: '340 12% 45%',
+  },
+  {
+    key: 'sage',    label: 'Verde hoja',  isDark: false,
+    background: '130 22% 97%', card: '130 15% 100%', muted: '130 16% 92%',
+    border: '130 14% 86%',     foreground: '130 22% 10%', mutedFg: '130 10% 44%',
+  },
+  {
+    key: 'peach',   label: 'Melocotón',   isDark: false,
+    background: '20 45% 97%',  card: '20 35% 100%', muted: '20 30% 92%',
+    border: '20 25% 86%',      foreground: '20 30% 10%',  mutedFg: '20 14% 44%',
+  },
+  {
+    key: 'sand',    label: 'Arena',       isDark: false,
+    background: '45 30% 96%',  card: '45 20% 100%', muted: '45 18% 91%',
+    border: '45 16% 84%',      foreground: '35 20% 10%',  mutedFg: '35 10% 44%',
   },
 ]
 
@@ -148,6 +197,16 @@ export function applyBackground(bg: BackgroundTheme): void {
   r.style.setProperty('--muted-foreground', bg.mutedFg)
   r.style.setProperty('--border',           bg.border)
   r.style.setProperty('--foreground',       bg.foreground)
+
+  // Semantic quality indicator colors — darker variants for light backgrounds
+  const q = bg.isDark ? QUALITY_DARK : QUALITY_LIGHT
+  r.style.setProperty('--q-excellent', q.excellent)
+  r.style.setProperty('--q-good',      q.good)
+  r.style.setProperty('--q-fair',      q.fair)
+  r.style.setProperty('--q-poor',      q.poor)
+
+  // Mark mode on root for any CSS-level overrides
+  r.dataset.themeMode = bg.isDark ? 'dark' : 'light'
 }
 
 export function getBackgroundTheme(key: string): BackgroundTheme {

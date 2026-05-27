@@ -9,11 +9,12 @@ interface SleepCardProps {
   date: string
 }
 
+// Colors reference CSS vars so they adapt on light vs dark backgrounds
 const QUALITY_CONFIG = {
-  excellent: { label: 'Excelente', color: 'text-violet-400', bg: 'bg-violet-500/20', ring: 'ring-violet-500/50', bar: 'bg-violet-500' },
-  good:      { label: 'Bueno',     color: 'text-emerald-400', bg: 'bg-emerald-500/20', ring: 'ring-emerald-500/50', bar: 'bg-emerald-500' },
-  fair:      { label: 'Regular',   color: 'text-amber-400',   bg: 'bg-amber-500/20',   ring: 'ring-amber-500/50',   bar: 'bg-amber-500' },
-  poor:      { label: 'Bajo',      color: 'text-rose-400',    bg: 'bg-rose-500/20',    ring: 'ring-rose-500/50',    bar: 'bg-rose-500' },
+  excellent: { label: 'Excelente', cssVar: '--q-excellent', bg: 'bg-violet-500/15',  bar: 'bg-violet-500' },
+  good:      { label: 'Bueno',     cssVar: '--q-good',      bg: 'bg-emerald-500/15', bar: 'bg-emerald-500' },
+  fair:      { label: 'Regular',   cssVar: '--q-fair',      bg: 'bg-amber-500/15',   bar: 'bg-amber-500' },
+  poor:      { label: 'Bajo',      cssVar: '--q-poor',      bg: 'bg-rose-500/15',    bar: 'bg-rose-500' },
 }
 
 function formatHours(h: number): string {
@@ -120,13 +121,14 @@ export function SleepCard({ date }: SleepCardProps) {
         onClick={() => !editing && setExpanded(v => !v)}
       >
         <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${entry ? cfg.bg : 'bg-muted'}`}>
-          <Moon size={20} className={entry ? cfg.color : 'text-muted-foreground'} />
+          <Moon size={20} style={entry ? { color: `hsl(var(${cfg.cssVar}))` } : undefined}
+            className={entry ? '' : 'text-muted-foreground'} />
         </div>
 
         <div className="flex-1 text-left">
           <p className="font-semibold text-sm">Sueño de anoche</p>
           {entry ? (
-            <p className={`text-xs mt-0.5 font-medium ${cfg.color}`}>
+            <p className="text-xs mt-0.5 font-medium" style={{ color: `hsl(var(${cfg.cssVar}))` }}>
               {entry.score} pts · {formatHours(entry.hours)} · {cfg.label}
             </p>
           ) : (
@@ -172,8 +174,8 @@ export function SleepCard({ date }: SleepCardProps) {
                 Score Garmin
               </label>
               <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg ${cfg.bg}`}>
-                <span className={`text-lg font-bold ${cfg.color}`}>{score}</span>
-                <span className={`text-xs font-medium ${cfg.color}`}>· {cfg.label}</span>
+                <span className="text-lg font-bold" style={{ color: `hsl(var(${cfg.cssVar}))` }}>{score}</span>
+                <span className="text-xs font-medium" style={{ color: `hsl(var(${cfg.cssVar}))` }}>· {cfg.label}</span>
               </div>
             </div>
             <input
