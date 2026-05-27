@@ -32,10 +32,27 @@ export interface HabitLog {
   note?: string
 }
 
+export interface SleepEntry {
+  id: string
+  date: string    // YYYY-MM-DD (the night that ended — yesterday when logged in the morning)
+  score: number   // Garmin sleep score 0–100
+  hours: number   // hours slept, e.g. 7.5
+  loggedAt: string
+}
+
+export type SleepQuality = 'excellent' | 'good' | 'fair' | 'poor'
+
+export function sleepQuality(score: number): SleepQuality {
+  if (score >= 85) return 'excellent'
+  if (score >= 70) return 'good'
+  if (score >= 50) return 'fair'
+  return 'poor'
+}
+
 export type AppView = 'today' | 'habits' | 'history' | 'settings'
 
 export interface DayStats {
-  date: string       // YYYY-MM-DD
+  date: string
   total: number
   completed: number
 }

@@ -4,6 +4,7 @@ import { useLogsStore } from '@/store/logsStore'
 import { usePlayerStore } from '@/store/playerStore'
 import { HabitCard } from '@/components/HabitCard'
 import { ProgressRing } from '@/components/ProgressRing'
+import { SleepCard } from '@/components/SleepCard'
 import { today, formatDisplayDate, isHabitScheduledForDate, toDateString } from '@/lib/dates'
 import { calcDayPoints, getStreak } from '@/lib/points'
 
@@ -97,24 +98,26 @@ export function TodayPage() {
         ) : (
           <>
             {/* Morning check-in section */}
-            {morningHabits.length > 0 && (
-              <section className="space-y-3">
-                <div className="flex items-center gap-2">
-                  <span className="text-base">☀️</span>
-                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Al despertar</p>
-                  <span className="text-xs text-muted-foreground">(de anoche)</span>
-                </div>
-                {morningHabits.map(habit => (
-                  <HabitCard
-                    key={habit.id}
-                    habit={habit}
-                    completed={isCompleted(habit.id, yesterdayStr)}
-                    onToggle={() => toggleLog(habit.id, yesterdayStr)}
-                    streak={getStreak(habit.id, logs, yesterdayStr)}
-                  />
-                ))}
-              </section>
-            )}
+            <section className="space-y-3">
+              <div className="flex items-center gap-2">
+                <span className="text-base">☀️</span>
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Al despertar</p>
+                <span className="text-xs text-muted-foreground">(de anoche)</span>
+              </div>
+
+              {/* Sleep tracker always visible in morning section */}
+              <SleepCard date={yesterdayStr} />
+
+              {morningHabits.map(habit => (
+                <HabitCard
+                  key={habit.id}
+                  habit={habit}
+                  completed={isCompleted(habit.id, yesterdayStr)}
+                  onToggle={() => toggleLog(habit.id, yesterdayStr)}
+                  streak={getStreak(habit.id, logs, yesterdayStr)}
+                />
+              ))}
+            </section>
 
             {/* Regular habits */}
             {regularHabits.length > 0 && (

@@ -1,18 +1,20 @@
 import { useState } from 'react'
 import { useHabitsStore } from '@/store/habitsStore'
 import { useLogsStore } from '@/store/logsStore'
+import { useSleepStore } from '@/store/sleepStore'
 import { Trash2, Download, Upload } from 'lucide-react'
 
 export function SettingsPage() {
   const { habits } = useHabitsStore()
   const { logs } = useLogsStore()
+  const { entries: sleepEntries } = useSleepStore()
   const [confirmReset, setConfirmReset] = useState(false)
 
   const totalLogs = logs.length
   const activeHabits = habits.filter(h => !h.archivedAt).length
 
   const exportData = () => {
-    const data = JSON.stringify({ habits, logs }, null, 2)
+    const data = JSON.stringify({ habits, logs, sleepEntries }, null, 2)
     const blob = new Blob([data], { type: 'application/json' })
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
@@ -35,6 +37,7 @@ export function SettingsPage() {
         if (data.habits && data.logs) {
           useHabitsStore.setState({ habits: data.habits })
           useLogsStore.setState({ logs: data.logs })
+          if (data.sleepEntries) useSleepStore.setState({ entries: data.sleepEntries })
           alert('Datos restaurados correctamente')
         }
       } catch {
@@ -47,6 +50,7 @@ export function SettingsPage() {
   const resetAll = () => {
     useHabitsStore.setState({ habits: [] })
     useLogsStore.setState({ logs: [] })
+    useSleepStore.setState({ entries: [] })
     setConfirmReset(false)
   }
 
