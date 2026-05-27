@@ -1,0 +1,130 @@
+import { useMemo } from 'react'
+import { useHabitsStore } from '@/store/habitsStore'
+import { useLogsStore } from '@/store/logsStore'
+import { getLast30Days, formatShortDate, isHabitScheduledForDate } from '@/lib/dates'
+import { getColor } from '@/lib/colors'
+
+export function HistoryPage() {
+  const habits = useHabitsStore(s => s.habits)
+  const { logs } = useLogsStore()
+
+  const last30 = useMemo(() => getLast30Days(), [])
+
+  const activeHabits = habits.filter(h => !h.archivedAt).sort((a, b) => a.order - b.order)
+
+  const stats = useMemo(() => {
+    return last30.map(date => {
+      const scheduled = activeHabits.filter(h => isHabitScheduledForDate(h, date))
+      const completed = scheduled.filter(h => logs.some(l => l.habitId === h.id && l.completedAt === date))
+      return { date, total: scheduled.length, completed: completed.length }
+    })
+  }, [last30, activeHabits, logs])
+
+  const overallPct = useMemo(() => {
+    const totalSlots = stats.reduce((acc, s) => acc + s.total, 0)
+    const totalDone  = stats.reduce((acc, s) => acc + s.completed, 0)
+    return totalSlots === 0 ? 0 : Math.round((totalDone / totalSlots) * 100)
+  }, [stats])
+
+  return (
+    <div className="flex flex-col min-h-full">
+      <header className="px-5 pt-safe pb-4">
+        <h1 className="text-2xl font-bold">Historial</h1>
+        <p className="text-sm text-muted-foreground mt-0.5">Últimos 30 días</p>
+      </header>
+
+      <main className="flex-1 px-4 pb-32 space-y-6">
+
+        {/* Overall stat */}
+        <div className="bg-card border border-border rounded-2xl p-5 flex items-center gap-4">
+          <div className="flex-1">
+            <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium">Tasa de completado</p>
+            <p className="text-4xl font-bold mt-1">{overallPct}%</p>
+            <p className="text-xs text-muted-foreground mt-1">en los últimos 30 días</p>
+          </div>
+          <div className="text-6xl">
+            {overallPct >= 80 ? '🔥' : overallPct >= 50 ? '💪' : '🌱'}
+          </div>
+        </div>
+
+        {/* Heatmap grid */}
+        <section>
+          <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium mb-3 px-1">
+            Actividad diaria
+          </p>
+          <div className="grid grid-cols-10 gap-1.5">
+            {stats.map(({ date, total, completed }) => {
+              const pct = total === 0 ? 0 : completed / total
+              const opacity =
+                total === 0 ? 'bg-muted/40' :
+                pct === 0   ? 'bg-muted' :
+                pct < 0.5   ? 'bg-primary/30' :
+                pct < 1     ? 'bg-primary/60' :
+                              'bg-primary'
+              return (
+                <div key={date} className="flex flex-col items-center gap-0.5">
+                  <div className={`w-full aspect-square rounded-md ${opacity} transition-all duration-200`} />
+                  <span className="text-[8px] text-muted-foreground">{formatShortDate(date).split(' ')[0]}</span>
+                </div>
+              )
+            })}
+          </div>
+          <div className="flex items-center gap-2 mt-2 justify-end">
+            <span className="text-[10px] text-muted-foreground">Menos</span>
+            {['bg-muted', 'bg-primary/30', 'bg-primary/60', 'bg-primary'].map(c => (
+              <div key={c} className={`w-3 h-3 rounded-sm ${c}`} />
+            ))}
+            <span className="text-[10px] text-muted-foreground">Más</span>
+          </div>
+        </section>
+
+        {/* Per-habit streaks */}
+        {activeHabits.length > 0 && (
+          <section>
+            <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium mb-3 px-1">
+              Por hábito
+            </p>
+            <div className="space-y-3">
+              {activeHabits.map(habit => {
+                const color = getColor(habit.color)
+                const habitLogs = logs.filter(l => l.habitId === habit.id)
+                const scheduled30 = last30.filter(d => isHabitScheduledForDate(habit, d))
+                const done30 = scheduled30.filter(d => habitLogs.some(l => l.completedAt === d))
+                const pct = scheduled30.length === 0 ? 0 : Math.round((done30.length / scheduled30.length) * 100)
+
+                return (
+                  <div key={habit.id} className="bg-card border border-border rounded-2xl p-4">
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className={`flex items-center justify-center w-9 h-9 rounded-xl text-xl ${color.light}`}>
+                        {habit.emoji}
+                      </div>
+                      <p className="font-semibold flex-1 truncate">{habit.name}</p>
+                      <span className={`text-sm font-bold ${color.text}`}>{pct}%</span>
+                    </div>
+                    {/* Mini bar chart — last 14 days */}
+                    <div className="flex gap-1 items-end h-8">
+                      {last30.slice(-14).map(date => {
+                        const inSchedule = isHabitScheduledForDate(habit, date)
+                        const done = habitLogs.some(l => l.completedAt === date)
+                        return (
+                          <div
+                            key={date}
+                            className={`flex-1 rounded-sm transition-all duration-200 ${
+                              !inSchedule ? 'bg-muted/30 h-1' :
+                              done        ? `${color.bg} h-full` :
+                                           'bg-muted h-2'
+                            }`}
+                          />
+                        )
+                      })}
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </section>
+        )}
+      </main>
+    </div>
+  )
+}
