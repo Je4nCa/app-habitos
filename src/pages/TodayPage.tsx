@@ -132,7 +132,8 @@ export function TodayPage() {
             <button
               onClick={() => handleShare(m)}
               disabled={sharingMilestone === m}
-              className="p-2 rounded-xl bg-primary/20 text-primary transition-all active:scale-95 disabled:opacity-50"
+              style={{ transition: 'transform 150ms cubic-bezier(0.23, 1, 0.32, 1)' }}
+              className="p-2 rounded-xl bg-primary/20 text-primary active:scale-[0.97] disabled:opacity-50"
             >
               <Share2 size={18} />
             </button>
@@ -155,13 +156,14 @@ export function TodayPage() {
                 <span className="text-xs text-muted-foreground">(de anoche)</span>
               </div>
               <SleepCard date={yesterdayStr} />
-              {morningHabits.map(habit => (
+              {morningHabits.map((habit, i) => (
                 <HabitCard
                   key={habit.id}
                   habit={habit}
                   completed={isCompleted(habit.id, yesterdayStr)}
                   onToggle={() => toggleLog(habit.id, yesterdayStr)}
                   streak={getStreak(habit.id, logs, yesterdayStr)}
+                  index={i + 1}
                 />
               ))}
             </section>
@@ -173,13 +175,14 @@ export function TodayPage() {
                   <span className="text-base">📋</span>
                   <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Del día</p>
                 </div>
-                {regularHabits.map(habit => (
+                {regularHabits.map((habit, i) => (
                   <HabitCard
                     key={habit.id}
                     habit={habit}
                     completed={isCompleted(habit.id, todayStr)}
                     onToggle={() => toggleLog(habit.id, todayStr)}
                     streak={getStreak(habit.id, logs, todayStr)}
+                    index={i}
                   />
                 ))}
               </section>

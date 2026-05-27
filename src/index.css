@@ -24,6 +24,11 @@
     --q-good:      152 68% 60%;
     --q-fair:       38 92% 67%;
     --q-poor:      347 77% 72%;
+
+    /* Custom easing curves — Emil Kowalski */
+    --ease-out:    cubic-bezier(0.23, 1, 0.32, 1);
+    --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+    --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
   }
 }
 
@@ -95,25 +100,47 @@
 }
 
 @keyframes check-pop {
-  0%   { transform: scale(0) rotate(-10deg); }
-  65%  { transform: scale(1.25) rotate(4deg); }
-  100% { transform: scale(1) rotate(0deg); }
+  0%   { transform: scale(0.9) rotate(-10deg); opacity: 0; }
+  60%  { transform: scale(1.18) rotate(4deg);  opacity: 1; }
+  100% { transform: scale(1)   rotate(0deg);   opacity: 1; }
 }
 
 @keyframes slide-up-fade {
-  from { opacity: 0; transform: translateY(12px); }
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes stagger-in {
+  from { opacity: 0; transform: translateY(8px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
 @layer utilities {
-  .animate-sheet-up   { animation: sheet-up      0.32s cubic-bezier(0.32, 0.72, 0, 1) both; }
-  .animate-fade-bd    { animation: fade-backdrop  0.22s ease-out both; }
-  .animate-scale-in   { animation: scale-in       0.25s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
-  .animate-check-pop  { animation: check-pop      0.28s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
-  .animate-slide-up   { animation: slide-up-fade  0.2s  ease-out both; }
+  .animate-sheet-up   { animation: sheet-up      0.30s cubic-bezier(0.32, 0.72, 0, 1)  both; }
+  .animate-fade-bd    { animation: fade-backdrop  0.20s ease-out both; }
+  .animate-scale-in   { animation: scale-in       0.22s cubic-bezier(0.23, 1, 0.32, 1)  both; }
+  .animate-check-pop  { animation: check-pop      0.26s cubic-bezier(0.34, 1.4,  0.64, 1) both; }
+  .animate-slide-up   { animation: slide-up-fade  0.18s cubic-bezier(0.23, 1, 0.32, 1)  both; }
+  .animate-stagger-in { animation: stagger-in     0.24s cubic-bezier(0.23, 1, 0.32, 1)  both; }
 
   /* will-change hints for elements that animate */
   .gpu { will-change: transform; transform: translateZ(0); }
+}
+
+/* Reduced motion: keep opacity fades, remove position/scale movement */
+@media (prefers-reduced-motion: reduce) {
+  .animate-sheet-up,
+  .animate-scale-in,
+  .animate-slide-up,
+  .animate-stagger-in {
+    animation: fade-backdrop 0.15s ease both !important;
+  }
+  .animate-check-pop {
+    animation: none !important;
+  }
+  * {
+    transition-duration: 0.01ms !important;
+  }
 }
 
 /* Smooth page transitions */

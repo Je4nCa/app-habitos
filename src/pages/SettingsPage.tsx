@@ -268,11 +268,14 @@ export function SettingsPage() {
                   className="flex flex-col items-center gap-1.5 group"
                 >
                   <div
-                    className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-200
+                    style={{
+                      background: `hsl(${c.primary})`,
+                      transition: 'transform 180ms cubic-bezier(0.23, 1, 0.32, 1), box-shadow 180ms ease',
+                    }}
+                    className={`w-14 h-14 rounded-2xl flex items-center justify-center
                       ${isSelected
                         ? 'scale-110 ring-2 ring-white/50 ring-offset-2 ring-offset-background shadow-lg'
-                        : 'scale-100 group-active:scale-90'}`}
-                    style={{ background: `hsl(${c.primary})` }}
+                        : 'scale-100 group-active:scale-[0.95]'}`}
                   >
                     {isSelected && (
                       <Check size={20} strokeWidth={3} style={{ color: `hsl(${c.fg})` }} className="animate-check-pop" />
@@ -314,11 +317,14 @@ export function SettingsPage() {
                         className="flex flex-col items-center gap-1.5 group"
                       >
                         <div
-                          className={`w-full aspect-[3/4] rounded-xl overflow-hidden relative transition-all duration-200
+                          style={{
+                            background: `hsl(${bg.background})`,
+                            transition: 'transform 180ms cubic-bezier(0.23, 1, 0.32, 1), box-shadow 180ms ease',
+                          }}
+                          className={`w-full aspect-[3/4] rounded-xl overflow-hidden relative
                             ${isSelected
                               ? 'scale-105 ring-2 ring-primary ring-offset-2 ring-offset-background shadow-lg'
-                              : 'group-active:scale-95'}`}
-                          style={{ background: `hsl(${bg.background})` }}
+                              : 'group-active:scale-[0.97]'}`}
                         >
                           {/* Fake card */}
                           <div className="mx-1.5 mt-2 h-2.5 rounded-md" style={{ background: `hsl(${bg.card})` }} />
@@ -421,13 +427,15 @@ export function SettingsPage() {
             <div className="flex gap-3">
               <button
                 onClick={() => setConfirmReset(false)}
-                className="flex-1 py-2.5 rounded-xl border border-border text-sm font-semibold active:scale-95 transition-transform"
+                style={{ transition: 'transform 150ms cubic-bezier(0.23, 1, 0.32, 1)' }}
+                className="flex-1 py-2.5 rounded-xl border border-border text-sm font-semibold active:scale-[0.97]"
               >
                 Cancelar
               </button>
               <button
                 onClick={resetAll}
-                className="flex-1 py-2.5 rounded-xl bg-destructive text-destructive-foreground text-sm font-semibold active:scale-95 transition-transform"
+                style={{ transition: 'transform 150ms cubic-bezier(0.23, 1, 0.32, 1)' }}
+                className="flex-1 py-2.5 rounded-xl bg-destructive text-destructive-foreground text-sm font-semibold active:scale-[0.97]"
               >
                 Borrar todo
               </button>

@@ -19,20 +19,31 @@ export function BottomNav() {
             to={to}
             end={to === '/'}
             className={({ isActive }) =>
-              `flex flex-col items-center gap-0.5 px-3 py-1 rounded-xl transition-all duration-200 active:scale-90 ${
+              `flex flex-col items-center gap-0.5 px-3 py-1 rounded-xl ${
                 isActive ? 'text-primary' : 'text-muted-foreground'
               }`
             }
+            style={{ transition: 'color 180ms cubic-bezier(0.23, 1, 0.32, 1)' }}
           >
             {({ isActive }) => (
               <>
-                <div className={`
-                  p-1.5 rounded-xl transition-all duration-200
-                  ${isActive ? 'bg-primary/15 scale-110' : 'scale-100'}
-                `}>
-                  <Icon size={20} strokeWidth={isActive ? 2.5 : 1.8} className="transition-all duration-200" />
+                <div
+                  className={`p-1.5 rounded-xl ${isActive ? 'bg-primary/15' : ''}`}
+                  style={{
+                    transform: isActive ? 'scale(1.1)' : 'scale(1)',
+                    transition: 'transform 180ms cubic-bezier(0.23, 1, 0.32, 1), background-color 180ms ease',
+                  }}
+                >
+                  <Icon
+                    size={20}
+                    strokeWidth={isActive ? 2.5 : 1.8}
+                    style={{ transition: 'stroke-width 180ms ease' }}
+                  />
                 </div>
-                <span className={`text-[10px] font-medium transition-all duration-200 ${isActive ? 'opacity-100 font-semibold' : 'opacity-50'}`}>
+                <span
+                  className={`text-[10px] font-medium ${isActive ? 'font-semibold' : 'opacity-50'}`}
+                  style={{ transition: 'opacity 180ms ease, font-weight 180ms ease' }}
+                >
                   {label}
                 </span>
               </>

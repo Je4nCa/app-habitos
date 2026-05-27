@@ -276,7 +276,8 @@ export function ChallengePage() {
               {iWon && (
                 <button
                   onClick={() => setClaimingFor(tab)}
-                  className="w-full mt-1 py-2.5 bg-primary text-primary-foreground rounded-xl text-sm font-semibold flex items-center justify-center gap-2 active:scale-95 transition-transform"
+                  style={{ transition: 'transform 150ms cubic-bezier(0.23, 1, 0.32, 1)' }}
+                  className="w-full mt-1 py-2.5 bg-primary text-primary-foreground rounded-xl text-sm font-semibold flex items-center justify-center gap-2 active:scale-[0.97]"
                 >
                   <Gift size={16} /> Canjear mi premio 🎁
                 </button>
@@ -438,7 +439,8 @@ export function ChallengePage() {
                   <button
                     key={prize.id}
                     onClick={() => handleClaimPrize(prize)}
-                    className="flex items-center gap-2 p-4 bg-card border border-border rounded-2xl text-left active:scale-95 active:bg-primary/10 transition-all duration-150"
+                    style={{ transition: 'transform 160ms cubic-bezier(0.23, 1, 0.32, 1), background-color 160ms ease' }}
+                    className="flex items-center gap-2 p-4 bg-card border border-border rounded-2xl text-left active:scale-[0.97] active:bg-primary/10"
                   >
                     <span className="text-3xl">{prize.emoji}</span>
                     <span className="text-sm font-semibold leading-tight">{prize.name}</span>
@@ -466,7 +468,8 @@ export function ChallengePage() {
                 <div className="flex gap-2 flex-wrap">
                   {PRIZE_EMOJIS.map(e => (
                     <button key={e} onClick={() => setNewPrizeEmoji(e)}
-                      className={`text-2xl p-1.5 rounded-xl transition-all duration-150 ${newPrizeEmoji === e ? 'bg-primary/20 ring-2 ring-primary scale-110' : 'bg-muted'}`}>
+                      style={{ transition: 'transform 150ms cubic-bezier(0.23, 1, 0.32, 1), background-color 150ms ease' }}
+                      className={`text-2xl p-1.5 rounded-xl active:scale-[0.92] ${newPrizeEmoji === e ? 'bg-primary/20 ring-2 ring-primary scale-110' : 'bg-muted'}`}>
                       {e}
                     </button>
                   ))}
@@ -483,11 +486,16 @@ export function ChallengePage() {
                 />
               </div>
               <div className="flex gap-3">
-                <button onClick={() => setShowAddPrize(false)} className="flex-1 py-3 border border-border rounded-xl text-sm font-semibold active:scale-95 transition-transform">Cancelar</button>
+                <button
+                  onClick={() => setShowAddPrize(false)}
+                  style={{ transition: 'transform 150ms cubic-bezier(0.23, 1, 0.32, 1)' }}
+                  className="flex-1 py-3 border border-border rounded-xl text-sm font-semibold active:scale-[0.97]"
+                >Cancelar</button>
                 <button
                   disabled={!newPrizeName.trim()}
                   onClick={() => { addPrize(newPrizeName, newPrizeEmoji); setNewPrizeName(''); setNewPrizeEmoji('🎁'); setShowAddPrize(false) }}
-                  className="flex-1 py-3 bg-primary text-primary-foreground rounded-xl text-sm font-semibold disabled:opacity-40 active:scale-95 transition-transform"
+                  style={{ transition: 'transform 150ms cubic-bezier(0.23, 1, 0.32, 1)' }}
+                  className="flex-1 py-3 bg-primary text-primary-foreground rounded-xl text-sm font-semibold disabled:opacity-40 active:scale-[0.97]"
                 >
                   Guardar
                 </button>
@@ -504,8 +512,16 @@ export function ChallengePage() {
           <div className="relative bg-card rounded-2xl border border-border p-6 w-full max-w-sm my-auto animate-scale-in">
             <h3 className="font-bold text-lg mb-2">¿Eliminar premio?</h3>
             <div className="flex gap-3 mt-4">
-              <button onClick={() => setConfirmRemove(null)} className="flex-1 py-2.5 border border-border rounded-xl text-sm font-semibold active:scale-95 transition-transform">Cancelar</button>
-              <button onClick={() => { removePrize(confirmRemove); setConfirmRemove(null) }} className="flex-1 py-2.5 bg-destructive text-destructive-foreground rounded-xl text-sm font-semibold active:scale-95 transition-transform">Eliminar</button>
+              <button
+                onClick={() => setConfirmRemove(null)}
+                style={{ transition: 'transform 150ms cubic-bezier(0.23, 1, 0.32, 1)' }}
+                className="flex-1 py-2.5 border border-border rounded-xl text-sm font-semibold active:scale-[0.97]"
+              >Cancelar</button>
+              <button
+                onClick={() => { removePrize(confirmRemove); setConfirmRemove(null) }}
+                style={{ transition: 'transform 150ms cubic-bezier(0.23, 1, 0.32, 1)' }}
+                className="flex-1 py-2.5 bg-destructive text-destructive-foreground rounded-xl text-sm font-semibold active:scale-[0.97]"
+              >Eliminar</button>
             </div>
           </div>
         </div>

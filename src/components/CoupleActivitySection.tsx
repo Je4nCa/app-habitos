@@ -96,7 +96,8 @@ export function CoupleActivitySection({ date, partnerName }: Props) {
                   <button
                     key={p.name}
                     onClick={() => handleAdd(p.name, p.emoji)}
-                    className="flex items-center gap-2 p-3 bg-card border border-border rounded-2xl text-left active:scale-95 transition-transform"
+                    style={{ transition: 'transform 150ms cubic-bezier(0.23, 1, 0.32, 1)' }}
+                    className="flex items-center gap-2 p-3 bg-card border border-border rounded-2xl text-left active:scale-[0.97]"
                   >
                     <span className="text-2xl">{p.emoji}</span>
                     <span className="text-sm font-medium">{p.name}</span>

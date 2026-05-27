@@ -38,7 +38,8 @@ export function HabitsPage() {
         <h1 className="text-2xl font-bold">Hábitos</h1>
         <button
           onClick={() => setSheet({ type: 'create' })}
-          className="flex items-center gap-1.5 bg-primary text-primary-foreground px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200 active:scale-95"
+          style={{ transition: 'transform 150ms cubic-bezier(0.23, 1, 0.32, 1)' }}
+          className="flex items-center gap-1.5 bg-primary text-primary-foreground px-4 py-2 rounded-xl text-sm font-semibold active:scale-[0.97]"
         >
           <Plus size={18} />
           Nuevo
@@ -52,19 +53,21 @@ export function HabitsPage() {
             <p className="text-muted-foreground text-sm">Aún no tienes hábitos</p>
             <button
               onClick={() => setSheet({ type: 'create' })}
-              className="mt-2 bg-primary text-primary-foreground px-5 py-2.5 rounded-xl text-sm font-semibold"
+              style={{ transition: 'transform 150ms cubic-bezier(0.23, 1, 0.32, 1)' }}
+              className="mt-2 bg-primary text-primary-foreground px-5 py-2.5 rounded-xl text-sm font-semibold active:scale-[0.97]"
             >
               Crear tu primer hábito
             </button>
           </div>
         )}
 
-        {active.map(habit => {
+        {active.map((habit, i) => {
           const color = getColor(habit.color)
           return (
             <div
               key={habit.id}
-              className="flex items-center gap-3 p-4 rounded-2xl border border-border bg-card"
+              style={{ animationDelay: `${i * 40}ms`, transition: 'transform 160ms cubic-bezier(0.23, 1, 0.32, 1)' }}
+              className="flex items-center gap-3 p-4 rounded-2xl border border-border bg-card animate-stagger-in active:scale-[0.98]"
             >
               <div className={`flex items-center justify-center w-11 h-11 rounded-xl text-2xl ${color.light}`}>
                 {habit.emoji}
@@ -161,13 +164,15 @@ export function HabitsPage() {
             <div className="flex gap-3">
               <button
                 onClick={() => setConfirmDelete(null)}
-                className="flex-1 py-2.5 rounded-xl border border-border text-sm font-semibold active:scale-95 transition-transform"
+                style={{ transition: 'transform 150ms cubic-bezier(0.23, 1, 0.32, 1)' }}
+                className="flex-1 py-2.5 rounded-xl border border-border text-sm font-semibold active:scale-[0.97]"
               >
                 Cancelar
               </button>
               <button
                 onClick={() => handleDelete(confirmDelete)}
-                className="flex-1 py-2.5 rounded-xl bg-destructive text-destructive-foreground text-sm font-semibold active:scale-95 transition-transform"
+                style={{ transition: 'transform 150ms cubic-bezier(0.23, 1, 0.32, 1)' }}
+                className="flex-1 py-2.5 rounded-xl bg-destructive text-destructive-foreground text-sm font-semibold active:scale-[0.97]"
               >
                 Eliminar
               </button>

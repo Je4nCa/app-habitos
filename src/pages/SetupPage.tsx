@@ -70,7 +70,8 @@ export function SetupPage() {
           <button
             onClick={goStep2}
             disabled={!playerName.trim() || !partnerName.trim()}
-            className="w-full py-3.5 bg-primary text-primary-foreground rounded-xl font-semibold text-base disabled:opacity-40 transition-all active:scale-95"
+            style={{ transition: 'transform 150ms cubic-bezier(0.23, 1, 0.32, 1)' }}
+            className="w-full py-3.5 bg-primary text-primary-foreground rounded-xl font-semibold text-base disabled:opacity-40 active:scale-[0.97]"
           >
             Continuar →
           </button>
@@ -103,7 +104,8 @@ export function SetupPage() {
           <div className="space-y-3">
             <button
               onClick={() => finish(true)}
-              className="w-full py-3.5 bg-primary text-primary-foreground rounded-xl font-semibold text-base transition-all active:scale-95"
+              style={{ transition: 'transform 150ms cubic-bezier(0.23, 1, 0.32, 1)' }}
+              className="w-full py-3.5 bg-primary text-primary-foreground rounded-xl font-semibold text-base active:scale-[0.97]"
             >
               Cargar estos hábitos ✓
             </button>

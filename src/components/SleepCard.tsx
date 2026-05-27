@@ -40,7 +40,8 @@ function Spinner({
         <button
           onClick={onDec}
           disabled={value <= min}
-          className="w-9 h-9 rounded-xl bg-muted flex items-center justify-center active:scale-90 transition-transform disabled:opacity-30"
+          style={{ transition: 'transform 140ms cubic-bezier(0.23, 1, 0.32, 1)' }}
+          className="w-9 h-9 rounded-xl bg-muted flex items-center justify-center active:scale-[0.97] disabled:opacity-30"
         >
           <Minus size={16} />
         </button>
@@ -50,7 +51,8 @@ function Spinner({
         <button
           onClick={onInc}
           disabled={value >= max}
-          className="w-9 h-9 rounded-xl bg-muted flex items-center justify-center active:scale-90 transition-transform disabled:opacity-30"
+          style={{ transition: 'transform 140ms cubic-bezier(0.23, 1, 0.32, 1)' }}
+          className="w-9 h-9 rounded-xl bg-muted flex items-center justify-center active:scale-[0.97] disabled:opacity-30"
         >
           <Plus size={16} />
         </button>
@@ -228,20 +230,23 @@ export function SleepCard({ date }: SleepCardProps) {
             {entry && (
               <button
                 onClick={handleDelete}
-                className="px-4 py-2.5 rounded-xl border border-border text-sm text-muted-foreground active:scale-95 transition-transform"
+                style={{ transition: 'transform 150ms cubic-bezier(0.23, 1, 0.32, 1)' }}
+                className="px-4 py-2.5 rounded-xl border border-border text-sm text-muted-foreground active:scale-[0.97]"
               >
                 Borrar
               </button>
             )}
             <button
               onClick={() => { setExpanded(false); setEditing(false) }}
-              className="px-4 py-2.5 rounded-xl border border-border text-sm font-semibold active:scale-95 transition-transform"
+              style={{ transition: 'transform 150ms cubic-bezier(0.23, 1, 0.32, 1)' }}
+              className="px-4 py-2.5 rounded-xl border border-border text-sm font-semibold active:scale-[0.97]"
             >
               Cancelar
             </button>
             <button
               onClick={handleSave}
-              className="flex-1 py-2.5 rounded-xl bg-primary text-primary-foreground text-sm font-semibold active:scale-95 transition-transform"
+              style={{ transition: 'transform 150ms cubic-bezier(0.23, 1, 0.32, 1)' }}
+              className="flex-1 py-2.5 rounded-xl bg-primary text-primary-foreground text-sm font-semibold active:scale-[0.97]"
             >
               Guardar
             </button>
