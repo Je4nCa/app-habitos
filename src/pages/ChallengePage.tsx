@@ -5,6 +5,8 @@ import { useLogsStore } from '@/store/logsStore'
 import { usePlayerStore } from '@/store/playerStore'
 import { usePrizesStore } from '@/store/prizesStore'
 import { calcMonthPoints, currentMonthKey, monthLabel } from '@/lib/points'
+import { isHabitScheduledForDate } from '@/lib/dates'
+import type { Habit, HabitLog } from '@/types'
 
 const PRIZE_EMOJIS = ['🎁', '🍕', '🎬', '💆', '🧖', '🛏️', '🎮', '🧹', '🍽️', '🎉', '🏖️', '🌮', '🍰', '🎲', '💅']
 
@@ -12,6 +14,8 @@ interface PartnerData {
   playerName: string
   monthKey: string
   points: number
+  habits?: Habit[]
+  logs?: HabitLog[]
 }
 
 export function ChallengePage() {
@@ -58,7 +62,13 @@ export function ChallengePage() {
         const text = await file.text()
         const data = JSON.parse(text)
         if (data.playerName && data.monthKey && typeof data.points === 'number') {
-          setPartnerData({ playerName: data.playerName, monthKey: data.monthKey, points: data.points })
+          setPartnerData({
+            playerName: data.playerName,
+            monthKey: data.monthKey,
+            points: data.points,
+            habits: data.habits,
+            logs: data.logs,
+          })
         } else {
           alert('Archivo de desafío inválido')
         }
@@ -76,6 +86,40 @@ export function ChallengePage() {
         ? partnerData.playerName
         : 'Empate'
     : null
+
+  // Habit-by-habit breakdown when partner data is available
+  const habitBreakdown = useMemo(() => {
+    if (!partnerData?.habits || !partnerData?.logs) return []
+    const [y, m] = monthKey.split('-').map(Number)
+    const daysInMonth = new Date(y, m, 0).getDate()
+    const monthDays = Array.from({ length: daysInMonth }, (_, i) =>
+      `${monthKey}-${String(i + 1).padStart(2, '0')}`
+    )
+
+    const habitNames = new Set([
+      ...habits.filter(h => !h.archivedAt).map(h => h.name),
+      ...(partnerData.habits ?? []).filter(h => !h.archivedAt).map(h => h.name),
+    ])
+
+    return Array.from(habitNames).map(name => {
+      const myHabit   = habits.find(h => h.name === name && !h.archivedAt)
+      const themHabit = partnerData.habits?.find(h => h.name === name && !h.archivedAt)
+      const isPersonal = myHabit?.isPersonal || themHabit?.isPersonal
+
+      const myDays   = myHabit   ? monthDays.filter(d => isHabitScheduledForDate(myHabit, d)) : []
+      const themDays = themHabit ? monthDays.filter(d => isHabitScheduledForDate(themHabit, d)) : []
+
+      const myDone   = myDays.filter(d => logs.some(l => l.habitId === myHabit?.id && l.completedAt === d)).length
+      const themDone = themDays.filter(d => partnerData.logs?.some(l => l.habitId === themHabit?.id && l.completedAt === d)).length
+
+      const myPct   = myDays.length   === 0 ? 0 : Math.round((myDone   / myDays.length)   * 100)
+      const themPct = themDays.length === 0 ? 0 : Math.round((themDone / themDays.length) * 100)
+
+      const emoji = myHabit?.emoji ?? themHabit?.emoji ?? '📋'
+
+      return { name, emoji, myPct, themPct, isPersonal: !!isPersonal }
+    }).sort((a, b) => (b.myPct + b.themPct) - (a.myPct + a.themPct))
+  }, [partnerData, habits, logs, monthKey])
 
   return (
     <div className="flex flex-col min-h-full">
@@ -134,7 +178,53 @@ export function ChallengePage() {
               </p>
             )}
           </div>
-        ) : (
+        ) : null}
+
+        {/* Habit-by-habit breakdown */}
+        {habitBreakdown.length > 0 && (
+          <section>
+            <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium mb-3 px-1">
+              Hábito por hábito
+            </p>
+            <div className="bg-card border border-border rounded-2xl overflow-hidden divide-y divide-border">
+              {/* Header */}
+              <div className="flex items-center px-4 py-2 bg-muted/40">
+                <div className="flex-1" />
+                <div className="w-16 text-center text-[10px] font-semibold text-muted-foreground uppercase">{playerName}</div>
+                <div className="w-16 text-center text-[10px] font-semibold text-muted-foreground uppercase">{partnerData?.playerName}</div>
+              </div>
+              {habitBreakdown.map(({ name, emoji, myPct, themPct, isPersonal }) => {
+                const iWin  = myPct > themPct
+                const theyWin = themPct > myPct
+                return (
+                  <div key={name} className="flex items-center gap-2 px-4 py-3">
+                    <span className="text-lg">{emoji}</span>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium truncate">{name}</p>
+                      {isPersonal && (
+                        <span className="text-[10px] text-muted-foreground bg-muted px-1.5 py-0.5 rounded-md">Personal</span>
+                      )}
+                    </div>
+                    <div className={`w-16 text-center`}>
+                      <span className={`text-sm font-bold ${iWin ? 'text-primary' : 'text-muted-foreground'}`}>
+                        {myPct}%
+                      </span>
+                      {iWin && <span className="text-xs ml-0.5">🏅</span>}
+                    </div>
+                    <div className="w-16 text-center">
+                      <span className={`text-sm font-bold ${theyWin ? 'text-primary' : 'text-muted-foreground'}`}>
+                        {themPct}%
+                      </span>
+                      {theyWin && <span className="text-xs ml-0.5">🏅</span>}
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </section>
+        )}
+
+        {!partnerData && (
           <div className="bg-card border border-border rounded-2xl p-5 text-center space-y-2">
             <Trophy size={32} className="mx-auto text-muted-foreground" />
             <p className="font-semibold">¿Quién ganó?</p>

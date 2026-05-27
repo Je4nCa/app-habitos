@@ -11,6 +11,7 @@ export const DEFAULT_COUPLE_HABITS: Omit<Habit, 'id' | 'createdAt'>[] = [
     color: 'sky',
     order: 0,
     isMorning: true,
+    isSleepDurationGoal: true,
   },
   {
     name: 'Me levanté sin snooze',
@@ -64,12 +65,13 @@ export const DEFAULT_COUPLE_HABITS: Omit<Habit, 'id' | 'createdAt'>[] = [
     order: 6,
   },
   {
-    name: 'Caminar al menos 20 min',
-    emoji: '🚶',
+    name: 'Caminar / salir a correr',
+    emoji: '🏃',
     category: 'fitness',
     frequency: 'daily',
     color: 'cyan',
     order: 7,
+    isPersonal: true,
   },
   {
     name: 'Hidratarse (2L de agua)',

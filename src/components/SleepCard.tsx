@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { Moon, ChevronDown, ChevronUp, Pencil } from 'lucide-react'
 import { useSleepStore } from '@/store/sleepStore'
+import { useHabitsStore } from '@/store/habitsStore'
+import { useLogsStore } from '@/store/logsStore'
 import { sleepQuality } from '@/types'
 
 interface SleepCardProps {
@@ -16,6 +18,8 @@ const QUALITY_CONFIG = {
 
 export function SleepCard({ date }: SleepCardProps) {
   const { entries, logSleep, deleteSleep } = useSleepStore()
+  const habits = useHabitsStore(s => s.habits)
+  const { isCompleted, toggleLog } = useLogsStore()
   const entry = entries.find(e => e.date === date)
 
   const [editing, setEditing] = useState(!entry)
@@ -23,11 +27,23 @@ export function SleepCard({ date }: SleepCardProps) {
   const [hours, setHours] = useState(entry?.hours ?? 7)
   const [expanded, setExpanded] = useState(!entry)
 
+  // Syncs the sleep duration goal habit when hours change
+  const syncSleepHabit = (savedHours: number) => {
+    const sleepHabit = habits.find(h => h.isSleepDurationGoal && !h.archivedAt)
+    if (!sleepHabit) return
+    const currentlyDone = isCompleted(sleepHabit.id, date)
+    const shouldBeDone = savedHours >= 8
+    if (shouldBeDone !== currentlyDone) {
+      toggleLog(sleepHabit.id, date)
+    }
+  }
+
   const quality = sleepQuality(score)
   const cfg = QUALITY_CONFIG[quality]
 
   const handleSave = () => {
     logSleep(date, score, hours)
+    syncSleepHabit(hours)
     setEditing(false)
   }
 
@@ -150,7 +166,14 @@ export function SleepCard({ date }: SleepCardProps) {
             <div className="flex gap-3">
               {entry && (
                 <button
-                  onClick={() => { deleteSleep(date); setEditing(false); setExpanded(false) }}
+                  onClick={() => {
+  deleteSleep(date)
+  // Unmark sleep goal habit if it was auto-completed
+  const sleepHabit = habits.find(h => h.isSleepDurationGoal && !h.archivedAt)
+  if (sleepHabit && isCompleted(sleepHabit.id, date)) toggleLog(sleepHabit.id, date)
+  setEditing(false)
+  setExpanded(false)
+}}
                   className="px-4 py-2.5 rounded-xl border border-border text-sm text-muted-foreground"
                 >
                   Borrar

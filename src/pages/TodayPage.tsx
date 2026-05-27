@@ -2,6 +2,7 @@ import { useMemo } from 'react'
 import { useHabitsStore } from '@/store/habitsStore'
 import { useLogsStore } from '@/store/logsStore'
 import { usePlayerStore } from '@/store/playerStore'
+import { useSleepStore } from '@/store/sleepStore'
 import { HabitCard } from '@/components/HabitCard'
 import { ProgressRing } from '@/components/ProgressRing'
 import { SleepCard } from '@/components/SleepCard'
@@ -18,15 +19,23 @@ export function TodayPage() {
   const habits = useHabitsStore(s => s.habits)
   const { logs, toggleLog, isCompleted } = useLogsStore()
   const { playerName } = usePlayerStore()
+  const sleepEntries = useSleepStore(s => s.entries)
 
-  const todayStr   = today()
+  const todayStr     = today()
   const yesterdayStr = yesterday()
+  const sleepEntry   = sleepEntries.find(e => e.date === yesterdayStr)
 
   const morningHabits = useMemo(
     () => habits
-      .filter(h => !h.archivedAt && h.isMorning && isHabitScheduledForDate(h, yesterdayStr))
+      .filter(h => {
+        if (h.archivedAt || !h.isMorning) return false
+        if (!isHabitScheduledForDate(h, yesterdayStr)) return false
+        // Sleep duration goal only shows when sleep entry has >= 8 hours
+        if (h.isSleepDurationGoal) return (sleepEntry?.hours ?? 0) >= 8
+        return true
+      })
       .sort((a, b) => a.order - b.order),
-    [habits, yesterdayStr]
+    [habits, yesterdayStr, sleepEntry]
   )
 
   const regularHabits = useMemo(
