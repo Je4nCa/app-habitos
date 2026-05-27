@@ -2,24 +2,14 @@ import type { Habit } from '@/types'
 import { nanoid } from 'nanoid'
 
 export const DEFAULT_COUPLE_HABITS: Omit<Habit, 'id' | 'createdAt'>[] = [
-  // Morning check-ins (se confirman al despertar, loguean para el día anterior)
-  {
-    name: 'Dormí 8 horas',
-    emoji: '😴',
-    category: 'sleep',
-    frequency: 'daily',
-    color: 'sky',
-    order: 0,
-    isMorning: true,
-    isSleepDurationGoal: true,
-  },
+  // Morning check-in (se confirma al despertar, loguea para el día anterior)
   {
     name: 'Me levanté sin snooze',
     emoji: '⏰',
     category: 'sleep',
     frequency: 'daily',
     color: 'amber',
-    order: 1,
+    order: 0,
     isMorning: true,
   },
 
@@ -30,7 +20,7 @@ export const DEFAULT_COUPLE_HABITS: Omit<Habit, 'id' | 'createdAt'>[] = [
     category: 'fitness',
     frequency: 'daily',
     color: 'emerald',
-    order: 2,
+    order: 1,
   },
   {
     name: 'Sin TikTok / pantallas en la tarde',
@@ -38,7 +28,7 @@ export const DEFAULT_COUPLE_HABITS: Omit<Habit, 'id' | 'createdAt'>[] = [
     category: 'productivity',
     frequency: 'daily',
     color: 'rose',
-    order: 3,
+    order: 2,
   },
   {
     name: 'Skincare mañana',
@@ -46,7 +36,7 @@ export const DEFAULT_COUPLE_HABITS: Omit<Habit, 'id' | 'createdAt'>[] = [
     category: 'health',
     frequency: 'daily',
     color: 'pink',
-    order: 4,
+    order: 3,
   },
   {
     name: 'Skincare en la noche',
@@ -54,7 +44,7 @@ export const DEFAULT_COUPLE_HABITS: Omit<Habit, 'id' | 'createdAt'>[] = [
     category: 'health',
     frequency: 'daily',
     color: 'violet',
-    order: 5,
+    order: 4,
   },
   {
     name: 'Magnesio en la noche',
@@ -62,7 +52,7 @@ export const DEFAULT_COUPLE_HABITS: Omit<Habit, 'id' | 'createdAt'>[] = [
     category: 'health',
     frequency: 'daily',
     color: 'teal',
-    order: 6,
+    order: 5,
   },
   {
     name: 'Caminar / salir a correr',
@@ -70,7 +60,7 @@ export const DEFAULT_COUPLE_HABITS: Omit<Habit, 'id' | 'createdAt'>[] = [
     category: 'fitness',
     frequency: 'daily',
     color: 'cyan',
-    order: 7,
+    order: 6,
     isPersonal: true,
   },
   {
@@ -79,7 +69,7 @@ export const DEFAULT_COUPLE_HABITS: Omit<Habit, 'id' | 'createdAt'>[] = [
     category: 'health',
     frequency: 'daily',
     color: 'sky',
-    order: 8,
+    order: 7,
   },
 ]
 

@@ -5,7 +5,9 @@ import { useSleepStore } from '@/store/sleepStore'
 import { useSettingsStore } from '@/store/settingsStore'
 import { useNotificationsStore } from '@/store/notificationsStore'
 import { usePlayerStore } from '@/store/playerStore'
-import { Trash2, Download, Upload, ShieldCheck, ShieldAlert, AlertCircle, Bell, BellOff } from 'lucide-react'
+import { useThemeStore } from '@/store/themeStore'
+import { THEME_COLORS } from '@/lib/theme'
+import { Trash2, Download, Upload, ShieldCheck, ShieldAlert, AlertCircle, Bell, BellOff, Check } from 'lucide-react'
 import { daysSince } from '@/lib/storage'
 import { requestPermission, isSupported } from '@/lib/notifications'
 
@@ -16,6 +18,7 @@ export function SettingsPage() {
   const { storagePermission, lastBackupAt, markBackup } = useSettingsStore()
   const notifs = useNotificationsStore()
   const { partnerName } = usePlayerStore()
+  const { primaryKey, setPrimary } = useThemeStore()
   const [confirmReset, setConfirmReset] = useState(false)
 
   const handleEnableNotifs = async () => {
@@ -245,6 +248,36 @@ export function SettingsPage() {
               </div>
             </div>
           )}
+        </div>
+
+        {/* Color theme picker */}
+        <div className="bg-card border border-border rounded-2xl p-5">
+          <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium mb-4">
+            Color del app
+          </p>
+          <div className="grid grid-cols-5 gap-3">
+            {THEME_COLORS.map(c => {
+              const isSelected = primaryKey === c.key
+              return (
+                <button
+                  key={c.key}
+                  onClick={() => setPrimary(c.key)}
+                  className="flex flex-col items-center gap-1.5 group"
+                >
+                  <div
+                    className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-200
+                      ${isSelected ? 'scale-110 ring-2 ring-white/50 ring-offset-2 ring-offset-background' : 'scale-100 group-active:scale-95'}`}
+                    style={{ background: `hsl(${c.primary})` }}
+                  >
+                    {isSelected && (
+                      <Check size={18} strokeWidth={3} style={{ color: `hsl(${c.fg})` }} className="animate-check-pop" />
+                    )}
+                  </div>
+                  <p className="text-[9px] text-muted-foreground text-center leading-tight">{c.label}</p>
+                </button>
+              )
+            })}
+          </div>
         </div>
 
         {/* Backup / restore */}

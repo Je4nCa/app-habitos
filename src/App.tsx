@@ -3,6 +3,8 @@ import { HashRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { usePlayerStore }        from '@/store/playerStore'
 import { useSettingsStore }      from '@/store/settingsStore'
 import { useNotificationsStore } from '@/store/notificationsStore'
+import { useThemeStore }         from '@/store/themeStore'
+import { applyTheme, getThemeColor } from '@/lib/theme'
 import { requestPersistentStorage } from '@/lib/storage'
 import { scheduleTodayNotifications } from '@/lib/notifications'
 import { BottomNav }      from '@/components/BottomNav'
@@ -15,8 +17,15 @@ import { SettingsPage }   from '@/pages/SettingsPage'
 
 function AppShell() {
   const { storagePermission, setStoragePermission } = useSettingsStore()
-  const notifs  = useNotificationsStore()
+  const notifs     = useNotificationsStore()
+  const primaryKey = useThemeStore(s => s.primaryKey)
   const { playerName } = usePlayerStore()
+
+  // Re-apply theme on every render cycle that changes primaryKey
+  // (covers the race between React render and onRehydrateStorage)
+  useEffect(() => {
+    applyTheme(getThemeColor(primaryKey))
+  }, [primaryKey])
 
   // Request persistent storage once
   useEffect(() => {
