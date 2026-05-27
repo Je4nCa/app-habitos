@@ -3,15 +3,25 @@ import { useHabitsStore } from '@/store/habitsStore'
 import { useLogsStore } from '@/store/logsStore'
 import { useSleepStore } from '@/store/sleepStore'
 import { useSettingsStore } from '@/store/settingsStore'
-import { Trash2, Download, Upload, ShieldCheck, ShieldAlert, AlertCircle } from 'lucide-react'
+import { useNotificationsStore } from '@/store/notificationsStore'
+import { usePlayerStore } from '@/store/playerStore'
+import { Trash2, Download, Upload, ShieldCheck, ShieldAlert, AlertCircle, Bell, BellOff } from 'lucide-react'
 import { daysSince } from '@/lib/storage'
+import { requestPermission, isSupported } from '@/lib/notifications'
 
 export function SettingsPage() {
   const { habits } = useHabitsStore()
   const { logs } = useLogsStore()
   const { entries: sleepEntries } = useSleepStore()
   const { storagePermission, lastBackupAt, markBackup } = useSettingsStore()
+  const notifs = useNotificationsStore()
+  const { partnerName } = usePlayerStore()
   const [confirmReset, setConfirmReset] = useState(false)
+
+  const handleEnableNotifs = async () => {
+    const perm = await requestPermission()
+    notifs.setPermission(perm)
+  }
 
   const totalLogs    = logs.length
   const activeHabits = habits.filter(h => !h.archivedAt).length
@@ -136,6 +146,83 @@ export function SettingsPage() {
             <p className="text-xs text-muted-foreground mt-3">
               ✓ Backup hace {backupDays === 0 ? 'menos de 1 día' : `${backupDays} días`}
             </p>
+          )}
+        </div>
+
+        {/* Notifications */}
+        <div className="bg-card border border-border rounded-2xl overflow-hidden">
+          <div className="flex items-center gap-2 px-5 pt-4 pb-2">
+            <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium flex-1">Notificaciones</p>
+            {notifs.permission === 'granted'
+              ? <Bell size={14} className="text-primary" />
+              : <BellOff size={14} className="text-muted-foreground" />
+            }
+          </div>
+
+          {!isSupported() ? (
+            <p className="px-5 pb-4 text-sm text-muted-foreground">Tu dispositivo no soporta notificaciones web.</p>
+          ) : notifs.permission !== 'granted' ? (
+            <div className="px-5 pb-4 space-y-3">
+              <p className="text-xs text-muted-foreground">
+                Activa los permisos para recibir recordatorios de bedtime y el check-in de tarde.
+                {notifs.permission === 'denied' && ' (Permiso bloqueado — actívalo en Ajustes del iPhone → Safari → Notificaciones)'}
+              </p>
+              {notifs.permission !== 'denied' && (
+                <button
+                  onClick={handleEnableNotifs}
+                  className="w-full py-2.5 bg-primary text-primary-foreground rounded-xl text-sm font-semibold"
+                >
+                  Activar notificaciones
+                </button>
+              )}
+              <p className="text-[10px] text-muted-foreground/60">
+                ⚠️ Las notificaciones se programan cuando abres la app. Ábrela cada mañana para que funcionen ese día.
+              </p>
+            </div>
+          ) : (
+            <div className="divide-y divide-border">
+              {/* Bedtime */}
+              <div className="px-5 py-3.5 flex items-center gap-3">
+                <span className="text-xl">😴</span>
+                <div className="flex-1">
+                  <p className="text-sm font-medium">Hora de dormir</p>
+                  <p className="text-xs text-muted-foreground">Recordatorio de bedtime</p>
+                </div>
+                <input
+                  type="time"
+                  value={notifs.bedtimeTime}
+                  onChange={e => notifs.setTime('bedtimeTime', e.target.value)}
+                  className="bg-muted rounded-lg px-2 py-1 text-sm mr-2 text-foreground"
+                />
+                <button
+                  onClick={() => notifs.toggle('bedtimeEnabled')}
+                  className={`w-11 h-6 rounded-full relative transition-all ${notifs.bedtimeEnabled ? 'bg-primary' : 'bg-border'}`}
+                >
+                  <div className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-all ${notifs.bedtimeEnabled ? 'left-5' : 'left-0.5'}`} />
+                </button>
+              </div>
+
+              {/* Afternoon */}
+              <div className="px-5 py-3.5 flex items-center gap-3">
+                <span className="text-xl">🏠</span>
+                <div className="flex-1">
+                  <p className="text-sm font-medium">Check-in de tarde</p>
+                  <p className="text-xs text-muted-foreground">Para {partnerName || 'cuando llegan'} al llegar a casa</p>
+                </div>
+                <input
+                  type="time"
+                  value={notifs.afternoonTime}
+                  onChange={e => notifs.setTime('afternoonTime', e.target.value)}
+                  className="bg-muted rounded-lg px-2 py-1 text-sm mr-2 text-foreground"
+                />
+                <button
+                  onClick={() => notifs.toggle('afternoonEnabled')}
+                  className={`w-11 h-6 rounded-full relative transition-all ${notifs.afternoonEnabled ? 'bg-primary' : 'bg-border'}`}
+                >
+                  <div className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-all ${notifs.afternoonEnabled ? 'left-5' : 'left-0.5'}`} />
+                </button>
+              </div>
+            </div>
           )}
         </div>
 

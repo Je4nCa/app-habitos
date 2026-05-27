@@ -2,6 +2,8 @@ import { useMemo } from 'react'
 import { useHabitsStore } from '@/store/habitsStore'
 import { useLogsStore } from '@/store/logsStore'
 import { useSleepStore } from '@/store/sleepStore'
+import { useCoupleActivitiesStore } from '@/store/coupleActivitiesStore'
+import { usePlayerStore } from '@/store/playerStore'
 import { getLast30Days, formatShortDate, isHabitScheduledForDate } from '@/lib/dates'
 import { getColor } from '@/lib/colors'
 import { sleepQuality } from '@/types'
@@ -23,6 +25,8 @@ export function HistoryPage() {
   const habits = useHabitsStore(s => s.habits)
   const { logs } = useLogsStore()
   const { entries: sleepEntries } = useSleepStore()
+  const { activities } = useCoupleActivitiesStore()
+  const { partnerName } = usePlayerStore()
 
   const last30 = useMemo(() => getLast30Days(), [])
 
@@ -227,6 +231,38 @@ export function HistoryPage() {
                   </div>
                 )
               })()}
+            </div>
+          </section>
+        )}
+
+        {/* Couple activities */}
+        {activities.length > 0 && (
+          <section>
+            <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium mb-3 px-1">
+              Juntos con {partnerName || 'tu pareja'}
+            </p>
+            <div className="space-y-2">
+              {[...new Set(activities.map(a => a.date))]
+                .sort((a, b) => b.localeCompare(a))
+                .slice(0, 14)
+                .map(date => {
+                  const dayActivities = activities.filter(a => a.date === date)
+                  return (
+                    <div key={date} className="bg-card border border-border rounded-2xl px-4 py-3 flex items-center gap-3">
+                      <div className="w-12 text-center shrink-0">
+                        <p className="text-xs text-muted-foreground font-medium">{formatShortDate(date)}</p>
+                      </div>
+                      <div className="h-8 w-px bg-border" />
+                      <div className="flex flex-wrap gap-1.5">
+                        {dayActivities.map(a => (
+                          <span key={a.id} className="flex items-center gap-1 bg-muted rounded-lg px-2 py-1 text-xs font-medium">
+                            {a.emoji} {a.name}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )
+                })}
             </div>
           </section>
         )}

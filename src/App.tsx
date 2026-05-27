@@ -1,8 +1,10 @@
 import { useEffect } from 'react'
 import { HashRouter, Routes, Route, Navigate } from 'react-router-dom'
-import { usePlayerStore }   from '@/store/playerStore'
-import { useSettingsStore } from '@/store/settingsStore'
+import { usePlayerStore }        from '@/store/playerStore'
+import { useSettingsStore }      from '@/store/settingsStore'
+import { useNotificationsStore } from '@/store/notificationsStore'
 import { requestPersistentStorage } from '@/lib/storage'
+import { scheduleTodayNotifications } from '@/lib/notifications'
 import { BottomNav }      from '@/components/BottomNav'
 import { SetupPage }      from '@/pages/SetupPage'
 import { TodayPage }      from '@/pages/TodayPage'
@@ -13,7 +15,10 @@ import { SettingsPage }   from '@/pages/SettingsPage'
 
 function AppShell() {
   const { storagePermission, setStoragePermission } = useSettingsStore()
+  const notifs  = useNotificationsStore()
+  const { playerName } = usePlayerStore()
 
+  // Request persistent storage once
   useEffect(() => {
     if (storagePermission === 'unknown') {
       requestPersistentStorage().then(granted => {
@@ -21,6 +26,25 @@ function AppShell() {
       })
     }
   }, [storagePermission, setStoragePermission])
+
+  // Schedule today's notifications on mount and when app regains focus
+  useEffect(() => {
+    const schedule = () => {
+      scheduleTodayNotifications({
+        bedtimeEnabled:   notifs.bedtimeEnabled,
+        bedtimeTime:      notifs.bedtimeTime,
+        afternoonEnabled: notifs.afternoonEnabled,
+        afternoonTime:    notifs.afternoonTime,
+        playerName,
+      })
+    }
+
+    schedule()
+
+    const onVisible = () => { if (document.visibilityState === 'visible') schedule() }
+    document.addEventListener('visibilitychange', onVisible)
+    return () => document.removeEventListener('visibilitychange', onVisible)
+  }, [notifs.bedtimeEnabled, notifs.bedtimeTime, notifs.afternoonEnabled, notifs.afternoonTime, playerName])
 
   return (
     <div className="min-h-dvh bg-background text-foreground flex flex-col">
