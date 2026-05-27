@@ -416,8 +416,8 @@ export function ChallengePage() {
       {/* Prize picker sheet (when winner claims) */}
       {claimingFor && (
         <div className="fixed inset-0 z-50 flex flex-col justify-end">
-          <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={() => setClaimingFor(null)} />
-          <div className="relative bg-background rounded-t-3xl border-t border-border safe-bottom">
+          <div className="absolute inset-0 bg-black/70 backdrop-blur-sm animate-fade-bd" onClick={() => setClaimingFor(null)} />
+          <div className="relative bg-background rounded-t-3xl border-t border-border safe-bottom gpu animate-sheet-up">
             <div className="mx-auto w-10 h-1 bg-border rounded-full mt-3" />
             <div className="px-5 pt-3 pb-2">
               <h3 className="font-bold text-xl">🏆 Escogé tu premio</h3>
@@ -438,7 +438,7 @@ export function ChallengePage() {
                   <button
                     key={prize.id}
                     onClick={() => handleClaimPrize(prize)}
-                    className="flex items-center gap-2 p-4 bg-card border border-border rounded-2xl text-left active:scale-95 active:bg-primary/10 transition-all"
+                    className="flex items-center gap-2 p-4 bg-card border border-border rounded-2xl text-left active:scale-95 active:bg-primary/10 transition-all duration-150"
                   >
                     <span className="text-3xl">{prize.emoji}</span>
                     <span className="text-sm font-semibold leading-tight">{prize.name}</span>
@@ -453,40 +453,45 @@ export function ChallengePage() {
       {/* Add prize sheet */}
       {showAddPrize && (
         <div className="fixed inset-0 z-50 flex flex-col justify-end">
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setShowAddPrize(false)} />
-          <div className="relative bg-background rounded-t-3xl border-t border-border p-6 safe-bottom space-y-4">
-            <div className="mx-auto w-10 h-1 bg-border rounded-full -mt-2 mb-2" />
-            <h3 className="font-bold text-lg">Nuevo premio</h3>
-            <div>
-              <label className="text-xs text-muted-foreground uppercase tracking-wider font-medium block mb-2">Emoji</label>
-              <div className="flex gap-2 flex-wrap">
-                {PRIZE_EMOJIS.map(e => (
-                  <button key={e} onClick={() => setNewPrizeEmoji(e)}
-                    className={`text-2xl p-1.5 rounded-xl transition-all ${newPrizeEmoji === e ? 'bg-primary/20 ring-2 ring-primary' : 'bg-muted'}`}>
-                    {e}
-                  </button>
-                ))}
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm animate-fade-bd" onClick={() => setShowAddPrize(false)} />
+          {/* max-h + overflow-y-auto so keyboard doesn't cut it off */}
+          <div className="relative bg-background rounded-t-3xl border-t border-border max-h-[90dvh] overflow-y-auto scrollbar-none safe-bottom gpu animate-sheet-up">
+            <div className="sticky top-0 bg-background pt-3 pb-1 px-5">
+              <div className="mx-auto w-10 h-1 bg-border rounded-full mb-3" />
+              <h3 className="font-bold text-lg pb-2">Nuevo premio</h3>
+            </div>
+            <div className="px-5 pb-6 space-y-4">
+              <div>
+                <label className="text-xs text-muted-foreground uppercase tracking-wider font-medium block mb-2">Emoji</label>
+                <div className="flex gap-2 flex-wrap">
+                  {PRIZE_EMOJIS.map(e => (
+                    <button key={e} onClick={() => setNewPrizeEmoji(e)}
+                      className={`text-2xl p-1.5 rounded-xl transition-all duration-150 ${newPrizeEmoji === e ? 'bg-primary/20 ring-2 ring-primary scale-110' : 'bg-muted'}`}>
+                      {e}
+                    </button>
+                  ))}
+                </div>
               </div>
-            </div>
-            <div>
-              <label className="text-xs text-muted-foreground uppercase tracking-wider font-medium block mb-2">Nombre</label>
-              <input
-                value={newPrizeName}
-                onChange={e => setNewPrizeName(e.target.value)}
-                placeholder="Ej: Noche de Netflix"
-                className="w-full bg-muted rounded-xl px-4 py-3 text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 ring-primary"
-                autoCapitalize="sentences"
-              />
-            </div>
-            <div className="flex gap-3">
-              <button onClick={() => setShowAddPrize(false)} className="flex-1 py-3 border border-border rounded-xl text-sm font-semibold">Cancelar</button>
-              <button
-                disabled={!newPrizeName.trim()}
-                onClick={() => { addPrize(newPrizeName, newPrizeEmoji); setNewPrizeName(''); setNewPrizeEmoji('🎁'); setShowAddPrize(false) }}
-                className="flex-1 py-3 bg-primary text-primary-foreground rounded-xl text-sm font-semibold disabled:opacity-40"
-              >
-                Guardar
-              </button>
+              <div>
+                <label className="text-xs text-muted-foreground uppercase tracking-wider font-medium block mb-2">Nombre</label>
+                <input
+                  value={newPrizeName}
+                  onChange={e => setNewPrizeName(e.target.value)}
+                  placeholder="Ej: Noche de Netflix"
+                  className="w-full bg-muted rounded-xl px-4 py-3 text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 ring-primary transition-all"
+                  autoCapitalize="sentences"
+                />
+              </div>
+              <div className="flex gap-3">
+                <button onClick={() => setShowAddPrize(false)} className="flex-1 py-3 border border-border rounded-xl text-sm font-semibold active:scale-95 transition-transform">Cancelar</button>
+                <button
+                  disabled={!newPrizeName.trim()}
+                  onClick={() => { addPrize(newPrizeName, newPrizeEmoji); setNewPrizeName(''); setNewPrizeEmoji('🎁'); setShowAddPrize(false) }}
+                  className="flex-1 py-3 bg-primary text-primary-foreground rounded-xl text-sm font-semibold disabled:opacity-40 active:scale-95 transition-transform"
+                >
+                  Guardar
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -494,13 +499,13 @@ export function ChallengePage() {
 
       {/* Confirm remove prize */}
       {confirmRemove && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-6">
-          <div className="absolute inset-0 bg-black/60" onClick={() => setConfirmRemove(null)} />
-          <div className="relative bg-card rounded-2xl border border-border p-6 w-full max-w-sm">
+        <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto p-5">
+          <div className="absolute inset-0 bg-black/60 animate-fade-bd" onClick={() => setConfirmRemove(null)} />
+          <div className="relative bg-card rounded-2xl border border-border p-6 w-full max-w-sm my-auto animate-scale-in">
             <h3 className="font-bold text-lg mb-2">¿Eliminar premio?</h3>
             <div className="flex gap-3 mt-4">
-              <button onClick={() => setConfirmRemove(null)} className="flex-1 py-2.5 border border-border rounded-xl text-sm font-semibold">Cancelar</button>
-              <button onClick={() => { removePrize(confirmRemove); setConfirmRemove(null) }} className="flex-1 py-2.5 bg-destructive text-destructive-foreground rounded-xl text-sm font-semibold">Eliminar</button>
+              <button onClick={() => setConfirmRemove(null)} className="flex-1 py-2.5 border border-border rounded-xl text-sm font-semibold active:scale-95 transition-transform">Cancelar</button>
+              <button onClick={() => { removePrize(confirmRemove); setConfirmRemove(null) }} className="flex-1 py-2.5 bg-destructive text-destructive-foreground rounded-xl text-sm font-semibold active:scale-95 transition-transform">Eliminar</button>
             </div>
           </div>
         </div>

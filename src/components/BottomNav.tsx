@@ -19,17 +19,20 @@ export function BottomNav() {
             to={to}
             end={to === '/'}
             className={({ isActive }) =>
-              `flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl transition-all duration-200 ${
+              `flex flex-col items-center gap-0.5 px-3 py-1 rounded-xl transition-all duration-200 active:scale-90 ${
                 isActive ? 'text-primary' : 'text-muted-foreground'
               }`
             }
           >
             {({ isActive }) => (
               <>
-                <div className={`p-1.5 rounded-xl transition-all duration-200 ${isActive ? 'bg-primary/15' : ''}`}>
-                  <Icon size={20} strokeWidth={isActive ? 2.2 : 1.8} />
+                <div className={`
+                  p-1.5 rounded-xl transition-all duration-200
+                  ${isActive ? 'bg-primary/15 scale-110' : 'scale-100'}
+                `}>
+                  <Icon size={20} strokeWidth={isActive ? 2.5 : 1.8} className="transition-all duration-200" />
                 </div>
-                <span className={`text-[10px] font-medium transition-all duration-200 ${isActive ? 'opacity-100' : 'opacity-60'}`}>
+                <span className={`text-[10px] font-medium transition-all duration-200 ${isActive ? 'opacity-100 font-semibold' : 'opacity-50'}`}>
                   {label}
                 </span>
               </>

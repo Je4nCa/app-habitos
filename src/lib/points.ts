@@ -90,14 +90,9 @@ export function getWeekBounds(date: Date): { start: string; end: string } {
   return { start, end }
 }
 
-/** "YYYY-WNN" key for a given date */
+/** Week key = the Monday date of the week as 'YYYY-MM-DD' — unambiguous, no week-number arithmetic */
 export function weekKey(date: Date): string {
-  // Use the Monday of the week as the key base
-  const { start } = getWeekBounds(date)
-  const monday = new Date(start + 'T12:00:00')
-  const jan1   = new Date(monday.getFullYear(), 0, 1)
-  const week   = Math.ceil(((monday.getTime() - jan1.getTime()) / 86400000 + jan1.getDay() + 1) / 7)
-  return `${monday.getFullYear()}-W${String(week).padStart(2, '0')}`
+  return getWeekBounds(date).start
 }
 
 export function currentWeekKey(): string {
@@ -112,21 +107,12 @@ export function calcWeekPoints(wKey: string, habits: Habit[], logs: HabitLog[]):
   return calcRangePoints(start, end, habits, logs)
 }
 
-/** Reconstruct start/end from a week key */
+/** Reconstruct start/end from a week key (wKey = Monday date 'YYYY-MM-DD') */
 export function getWeekBoundsFromKey(wKey: string): { start: string; end: string } {
-  // Parse YYYY-WNN, find the Monday of that week
-  const [yearStr, weekStr] = wKey.split('-W')
-  const year = Number(yearStr)
-  const week = Number(weekStr)
-  const jan1 = new Date(year, 0, 1)
-  const jan1Dow = jan1.getDay() // 0=Sun
-  const daysToFirstMonday = jan1Dow === 0 ? 1 : jan1Dow === 1 ? 0 : 8 - jan1Dow
-  const firstMonday = new Date(year, 0, 1 + daysToFirstMonday)
-  const monday = new Date(firstMonday)
-  monday.setDate(firstMonday.getDate() + (week - 1) * 7)
+  const monday = new Date(wKey + 'T12:00:00')
   const sunday = new Date(monday)
   sunday.setDate(monday.getDate() + 6)
-  return { start: toDateString(monday), end: toDateString(sunday) }
+  return { start: wKey, end: toDateString(sunday) }
 }
 
 export function weekLabel(wKey: string): string {

@@ -137,10 +137,10 @@ export function HabitsPage() {
       {sheet && (
         <div className="fixed inset-0 z-50 flex flex-col justify-end">
           <div
-            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm animate-fade-bd"
             onClick={() => setSheet(null)}
           />
-          <div className="relative bg-background rounded-t-3xl border-t border-border min-h-[85dvh] max-h-[95dvh] flex flex-col safe-bottom">
+          <div className="relative bg-background rounded-t-3xl border-t border-border min-h-[85dvh] max-h-[95dvh] flex flex-col safe-bottom gpu animate-sheet-up">
             <div className="mx-auto w-10 h-1 bg-border rounded-full mt-3 mb-1" />
             <HabitForm
               initial={sheet.type === 'edit' ? sheet.habit : undefined}
@@ -153,21 +153,21 @@ export function HabitsPage() {
 
       {/* Confirm delete */}
       {confirmDelete && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-6">
-          <div className="absolute inset-0 bg-black/60" onClick={() => setConfirmDelete(null)} />
-          <div className="relative bg-card rounded-2xl border border-border p-6 w-full max-w-sm">
+        <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto p-5">
+          <div className="absolute inset-0 bg-black/60 animate-fade-bd" onClick={() => setConfirmDelete(null)} />
+          <div className="relative bg-card rounded-2xl border border-border p-6 w-full max-w-sm my-auto animate-scale-in">
             <h3 className="font-bold text-lg mb-2">¿Eliminar hábito?</h3>
             <p className="text-muted-foreground text-sm mb-6">Esto también borrará todo el historial. No se puede deshacer.</p>
             <div className="flex gap-3">
               <button
                 onClick={() => setConfirmDelete(null)}
-                className="flex-1 py-2.5 rounded-xl border border-border text-sm font-semibold"
+                className="flex-1 py-2.5 rounded-xl border border-border text-sm font-semibold active:scale-95 transition-transform"
               >
                 Cancelar
               </button>
               <button
                 onClick={() => handleDelete(confirmDelete)}
-                className="flex-1 py-2.5 rounded-xl bg-destructive text-destructive-foreground text-sm font-semibold"
+                className="flex-1 py-2.5 rounded-xl bg-destructive text-destructive-foreground text-sm font-semibold active:scale-95 transition-transform"
               >
                 Eliminar
               </button>

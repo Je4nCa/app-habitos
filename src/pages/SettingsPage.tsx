@@ -217,9 +217,30 @@ export function SettingsPage() {
                 />
                 <button
                   onClick={() => notifs.toggle('afternoonEnabled')}
-                  className={`w-11 h-6 rounded-full relative transition-all ${notifs.afternoonEnabled ? 'bg-primary' : 'bg-border'}`}
+                  className={`w-11 h-6 rounded-full relative transition-all duration-200 ${notifs.afternoonEnabled ? 'bg-primary' : 'bg-border'}`}
                 >
-                  <div className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-all ${notifs.afternoonEnabled ? 'left-5' : 'left-0.5'}`} />
+                  <div className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-all duration-200 ${notifs.afternoonEnabled ? 'left-5' : 'left-0.5'}`} />
+                </button>
+              </div>
+
+              {/* Habit reminder */}
+              <div className="px-5 py-3.5 flex items-center gap-3">
+                <span className="text-xl">✅</span>
+                <div className="flex-1">
+                  <p className="text-sm font-medium">Hábitos pendientes</p>
+                  <p className="text-xs text-muted-foreground">Avisa si quedaron hábitos sin completar</p>
+                </div>
+                <input
+                  type="time"
+                  value={notifs.habitReminderTime}
+                  onChange={e => notifs.setTime('habitReminderTime', e.target.value)}
+                  className="bg-muted rounded-lg px-2 py-1 text-sm mr-2 text-foreground"
+                />
+                <button
+                  onClick={() => notifs.toggle('habitReminderEnabled')}
+                  className={`w-11 h-6 rounded-full relative transition-all duration-200 ${notifs.habitReminderEnabled ? 'bg-primary' : 'bg-border'}`}
+                >
+                  <div className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-all duration-200 ${notifs.habitReminderEnabled ? 'left-5' : 'left-0.5'}`} />
                 </button>
               </div>
             </div>
@@ -290,9 +311,9 @@ export function SettingsPage() {
 
       {/* Confirm reset dialog */}
       {confirmReset && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-6">
-          <div className="absolute inset-0 bg-black/60" onClick={() => setConfirmReset(false)} />
-          <div className="relative bg-card rounded-2xl border border-border p-6 w-full max-w-sm">
+        <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto p-5">
+          <div className="absolute inset-0 bg-black/60 animate-fade-bd" onClick={() => setConfirmReset(false)} />
+          <div className="relative bg-card rounded-2xl border border-border p-6 w-full max-w-sm my-auto animate-scale-in">
             <h3 className="font-bold text-lg mb-2">¿Borrar todo?</h3>
             <p className="text-muted-foreground text-sm mb-6">
               Se eliminarán todos los hábitos y registros. Esta acción no se puede deshacer.
@@ -300,13 +321,13 @@ export function SettingsPage() {
             <div className="flex gap-3">
               <button
                 onClick={() => setConfirmReset(false)}
-                className="flex-1 py-2.5 rounded-xl border border-border text-sm font-semibold"
+                className="flex-1 py-2.5 rounded-xl border border-border text-sm font-semibold active:scale-95 transition-transform"
               >
                 Cancelar
               </button>
               <button
                 onClick={resetAll}
-                className="flex-1 py-2.5 rounded-xl bg-destructive text-destructive-foreground text-sm font-semibold"
+                className="flex-1 py-2.5 rounded-xl bg-destructive text-destructive-foreground text-sm font-semibold active:scale-95 transition-transform"
               >
                 Borrar todo
               </button>

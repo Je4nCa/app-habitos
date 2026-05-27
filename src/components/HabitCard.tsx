@@ -26,16 +26,10 @@ export function HabitCard({ habit, completed, onToggle, streak = 0 }: HabitCardP
     setPressed(false)
     const dx = e.changedTouches[0].clientX - touchStartX.current
     const dy = Math.abs(e.changedTouches[0].clientY - touchStartY.current)
-    // swipe right to complete / undo
-    if (dx > 50 && dy < 40) {
-      onToggle()
-      return
-    }
+    if (dx > 50 && dy < 40) { onToggle(); return }
   }
 
-  const handleTouchMove = () => {
-    setPressed(false)
-  }
+  const handleTouchMove = () => setPressed(false)
 
   return (
     <div
@@ -44,20 +38,17 @@ export function HabitCard({ habit, completed, onToggle, streak = 0 }: HabitCardP
       onTouchMove={handleTouchMove}
       onClick={onToggle}
       className={`
-        relative flex items-center gap-3 p-4 rounded-2xl border
-        transition-all duration-200 cursor-pointer select-none
-        ${pressed ? 'scale-[0.97] opacity-80' : 'scale-100 opacity-100'}
-        ${completed
-          ? `${color.light} border-transparent`
-          : 'bg-card border-border'
-        }
+        relative flex items-center gap-3 p-4 rounded-2xl border select-none cursor-pointer gpu
+        transition-all duration-200 ease-out
+        ${pressed ? 'scale-[0.96]' : 'scale-100'}
+        ${completed ? `${color.light} border-transparent` : 'bg-card border-border'}
       `}
     >
-      {/* Emoji + color dot */}
+      {/* Emoji icon */}
       <div className={`
         flex items-center justify-center w-11 h-11 rounded-xl text-2xl
-        transition-all duration-200
-        ${completed ? color.bg : `${color.light}`}
+        transition-all duration-200 ease-out
+        ${completed ? color.bg : color.light}
       `}>
         {habit.emoji}
       </div>
@@ -68,22 +59,25 @@ export function HabitCard({ habit, completed, onToggle, streak = 0 }: HabitCardP
           {habit.name}
         </p>
         {streak > 1 && (
-          <p className={`text-xs mt-0.5 ${color.text}`}>
+          <p className={`text-xs mt-0.5 transition-all duration-200 ${color.text}`}>
             🔥 {streak} días seguidos
           </p>
         )}
       </div>
 
-      {/* Check circle */}
+      {/* Check circle — pop animation on mount when completed */}
       <div className={`
         flex items-center justify-center w-8 h-8 rounded-full border-2
-        transition-all duration-200
-        ${completed
-          ? `${color.bg} border-transparent`
-          : 'border-border bg-transparent'
-        }
+        transition-all duration-200 ease-out
+        ${completed ? `${color.bg} border-transparent` : 'border-border bg-transparent'}
       `}>
-        {completed && <Check size={16} strokeWidth={3} className="text-white" />}
+        {completed && (
+          <Check
+            size={16}
+            strokeWidth={3}
+            className="text-white animate-check-pop"
+          />
+        )}
       </div>
     </div>
   )

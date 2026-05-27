@@ -11,12 +11,14 @@ const idbStorage = {
 interface NotificationsState {
   permission: NotificationPermission | 'unsupported'
   bedtimeEnabled: boolean
-  bedtimeTime: string        // 'HH:MM'
+  bedtimeTime: string
   afternoonEnabled: boolean
-  afternoonTime: string      // 'HH:MM'
+  afternoonTime: string
+  habitReminderEnabled: boolean
+  habitReminderTime: string
   setPermission: (p: NotificationPermission | 'unsupported') => void
-  toggle: (key: 'bedtimeEnabled' | 'afternoonEnabled') => void
-  setTime: (key: 'bedtimeTime' | 'afternoonTime', value: string) => void
+  toggle: (key: 'bedtimeEnabled' | 'afternoonEnabled' | 'habitReminderEnabled') => void
+  setTime: (key: 'bedtimeTime' | 'afternoonTime' | 'habitReminderTime', value: string) => void
 }
 
 export const useNotificationsStore = create<NotificationsState>()(
@@ -27,6 +29,8 @@ export const useNotificationsStore = create<NotificationsState>()(
       bedtimeTime: '20:30',
       afternoonEnabled: true,
       afternoonTime: '15:30',
+      habitReminderEnabled: true,
+      habitReminderTime: '18:00',
       setPermission: (p) => set({ permission: p }),
       toggle: (key) => set((s) => ({ [key]: !s[key] })),
       setTime: (key, value) => set({ [key]: value }),

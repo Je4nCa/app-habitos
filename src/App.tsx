@@ -31,10 +31,12 @@ function AppShell() {
   useEffect(() => {
     const schedule = () => {
       scheduleTodayNotifications({
-        bedtimeEnabled:   notifs.bedtimeEnabled,
-        bedtimeTime:      notifs.bedtimeTime,
-        afternoonEnabled: notifs.afternoonEnabled,
-        afternoonTime:    notifs.afternoonTime,
+        bedtimeEnabled:        notifs.bedtimeEnabled,
+        bedtimeTime:           notifs.bedtimeTime,
+        afternoonEnabled:      notifs.afternoonEnabled,
+        afternoonTime:         notifs.afternoonTime,
+        habitReminderEnabled:  notifs.habitReminderEnabled,
+        habitReminderTime:     notifs.habitReminderTime,
         playerName,
       })
     }
@@ -44,7 +46,12 @@ function AppShell() {
     const onVisible = () => { if (document.visibilityState === 'visible') schedule() }
     document.addEventListener('visibilitychange', onVisible)
     return () => document.removeEventListener('visibilitychange', onVisible)
-  }, [notifs.bedtimeEnabled, notifs.bedtimeTime, notifs.afternoonEnabled, notifs.afternoonTime, playerName])
+  }, [
+    notifs.bedtimeEnabled, notifs.bedtimeTime,
+    notifs.afternoonEnabled, notifs.afternoonTime,
+    notifs.habitReminderEnabled, notifs.habitReminderTime,
+    playerName,
+  ])
 
   return (
     <div className="min-h-dvh bg-background text-foreground flex flex-col">
