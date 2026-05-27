@@ -1,5 +1,8 @@
+import { useEffect } from 'react'
 import { HashRouter, Routes, Route, Navigate } from 'react-router-dom'
-import { usePlayerStore } from '@/store/playerStore'
+import { usePlayerStore }   from '@/store/playerStore'
+import { useSettingsStore } from '@/store/settingsStore'
+import { requestPersistentStorage } from '@/lib/storage'
 import { BottomNav }      from '@/components/BottomNav'
 import { SetupPage }      from '@/pages/SetupPage'
 import { TodayPage }      from '@/pages/TodayPage'
@@ -9,6 +12,16 @@ import { ChallengePage }  from '@/pages/ChallengePage'
 import { SettingsPage }   from '@/pages/SettingsPage'
 
 function AppShell() {
+  const { storagePermission, setStoragePermission } = useSettingsStore()
+
+  useEffect(() => {
+    if (storagePermission === 'unknown') {
+      requestPersistentStorage().then(granted => {
+        setStoragePermission(granted ? 'granted' : 'denied')
+      })
+    }
+  }, [storagePermission, setStoragePermission])
+
   return (
     <div className="min-h-dvh bg-background text-foreground flex flex-col">
       <Routes>
